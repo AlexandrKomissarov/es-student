@@ -1,9 +1,0 @@
-﻿git version 2.56.0.windows.2
-Python 3.15.0
-cmake version 4.4.4
-GNU Make 3.81
-arm-none-eabi-gcc.exe (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 15.2.1 20251203
-code 1.141.2
-picotool v2.3.0 (Windows, GNU-16.1.0, Release)
-pico-sdk 2.3.0
-PICO_SDK_PATH=C:\Repositories\pico\pico-sdk\
