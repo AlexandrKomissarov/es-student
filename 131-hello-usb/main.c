@@ -7,7 +7,7 @@ int main()
 
     while (1)
     {
-        printf("Help !\n");
+        printf("Hello, world!\n");
         sleep_ms(1000);
     }
 }
