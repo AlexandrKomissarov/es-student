@@ -10,7 +10,7 @@ const uint DEBOUNCE_MS = 20;
 bool get_button_debounce(uint pin)
 {
     // читаем вывод устойчиво к дребезгу
-     bool state = gpio_get(pin);
+    bool state = gpio_get(pin);
     sleep_ms(DEBOUNCE_MS);
     return state && gpio_get(pin);
 }
