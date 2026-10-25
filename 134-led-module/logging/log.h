@@ -10,9 +10,9 @@
 #define FIRMWARE_VERSION "1.0.0"
 
 // три уровня и порог LOG_LEVEL
-#define LOG_LEVEL_ERR 4
-#define LOG_LEVEL_INF 6
-#define LOG_LEVEL_DBG 8
+#define LOG_LEVEL_ERR 1
+#define LOG_LEVEL_INF 2
+#define LOG_LEVEL_DBG 3
 
 void log_version(void);
 void log_prefix(const char *level, const char *function, int line);
@@ -49,7 +49,7 @@ void log_prefix(const char *level, const char *function, int line);
 #ifndef LOG_LEVEL
 #define LOG_LEVEL LOG_LEVEL_DBG
 
-#define LOG_INF(...)                                \
+#define LOG_DBG(...)                                \
     do                                              \
     {                                               \
         if (LOG_LEVEL >= LOG_LEVEL_DBG)             \
