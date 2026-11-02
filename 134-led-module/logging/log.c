@@ -1,6 +1,12 @@
 #include "device.h"
 #include "log.h"
 
+void log_version(void)
+{
+    // печатаем имя, версию, дату и время сборки, текущий уровень
+    printf("device: %s %s, built %s %s, log level %d\n",
+           DEVICE_NAME, FIRMWARE_VERSION, __DATE__, __TIME__, LOG_LEVEL);
+}
 
 void log_prefix(const char *level, const char *function, int line)
 {
