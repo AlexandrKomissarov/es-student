@@ -1,5 +1,6 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include "pico/unique_id.h"
 #include "led.h"
 #include "log.h"
 #include <stdio.h>
