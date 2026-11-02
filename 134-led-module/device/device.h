@@ -16,13 +16,6 @@
 #define DEVICE_BOARD "unknown"
 #endif
 
-void log_version(void)
-{
-    // печатаем имя, версию, дату и время сборки, текущий уровень
-    printf("device: %s %s, built %s %s, log level %d\n",
-           DEVICE_NAME, FIRMWARE_VERSION, __DATE__, __TIME__, LOG_LEVEL);
-}
-
 void device_info(void)
 {
     // печатаем имя, версию, дату и время сборки, текущий уровень
