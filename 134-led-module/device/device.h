@@ -8,6 +8,8 @@
 #define DEVICE_PROJECT "134-led-module"
 #define DEVICE_REPO "https://github.com/AlexandrKomissarov/es-student"
 
+
+
 void log_version(void)
 {
     printf("device: %s %s, built %s %s, log level %d\n",
