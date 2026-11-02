@@ -1,11 +1,17 @@
-// заголовочные файлы: добавился led.h, константы  больше нет
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include <stdio.h>
+#include "pico/unique_id.h"
+#include "hardware/regs/addressmap.h"
+#include "hardware/regs/sio.h"
 #include "led.h"
 #include "log.h"
 #include "device.h"
-#include <stdio.h>
 
+
+    char board_id[PICO_UNIQUE_BOARD_ID_SIZE_BYTES * 2 + 1];
+    pico_get_unique_board_id_string(board_id, sizeof(board_id));
+ 
 const uint BUTTON_PIN = 15;
 const uint DEBOUNCE_MS = 20;
 
@@ -45,7 +51,6 @@ void handle_command(int command)
 
 int main()
 {
-    // включаем стандартный ввод-вывод
     stdio_init_all();
 
     led_init();
@@ -61,7 +66,6 @@ int main()
 
     while (1)
     {
-        // читаем состояние пина кнопки с задержкой
         bool current = get_button_debounce(BUTTON_PIN);
 
         if (previous == true && current == false)
@@ -70,7 +74,6 @@ int main()
             LOG_DBG("led %s\n", led_is_on() ? "on" : "off");
         }
 
-        // запоминаем текущее состояние пина кнопки, как предыдущее
         previous = current;
         
         int command = getchar_timeout_us(0);
@@ -79,6 +82,7 @@ int main()
         {
             continue;
         }
+
         LOG_DBG("got %c\n", command);
         handle_command(command);
     }
