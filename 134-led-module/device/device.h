@@ -8,7 +8,9 @@
 #define DEVICE_PROJECT "134-led-module"
 #define DEVICE_REPO "https://github.com/AlexandrKomissarov/es-student"
 
-
+#ifndef DEVICE_BOARD
+#define DEVICE_BOARD "unknown"
+#endif
 
 void log_version(void)
 {
