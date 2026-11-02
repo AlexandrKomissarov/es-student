@@ -5,7 +5,7 @@ set(PICO_PLATFORM rp2040)
 
 include(pico_sdk_import.cmake)
 
-project(134_led_module)
+project(126_led_module_log)
 
 pico_sdk_init()
 

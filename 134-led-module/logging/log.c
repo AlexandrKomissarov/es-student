@@ -1,5 +1,5 @@
-#include "log.h"
 #include "device.h"
+#include "log.h"
 
 void log_version(void)
 {
