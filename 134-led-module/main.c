@@ -1,9 +1,10 @@
+#include "pico/unique_id.h"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include <stdio.h>
 #include "led.h"
 #include "log.h"
 #include "device.h"
-#include <stdio.h>
  
 const uint BUTTON_PIN = 15;
 const uint DEBOUNCE_MS = 20;
