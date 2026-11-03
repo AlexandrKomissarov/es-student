@@ -1,11 +1,9 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
-#include "pico/unique_id.h"
 #include "led.h"
 #include "log.h"
 #include <stdio.h>
-#include "device.h"
-
+ 
 const uint BUTTON_PIN = 15;
 const uint DEBOUNCE_MS = 20;
 
@@ -32,10 +30,6 @@ void handle_command(int command)
     else if (command == 'v')
     {
         log_version();
-    }
-    else if (command == 'i')
-    {
-        device_info();
     }
     else
     {
@@ -65,7 +59,7 @@ int main()
         if (previous == true && current == false)
         {
             led_toggle();
-            LOG_DBG("led %s\n", led_is_on() ? "on" : "off");
+            printf("led %s\n", led_is_on() ? "on" : "off");
         }
 
         previous = current;
