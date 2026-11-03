@@ -21,13 +21,21 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 target_link_libraries(${PROJECT_NAME}
     pico_stdlib
+    pico_unique_id
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    DEVICE_BOARD="${PICO_BOARD}"
 )
 
 pico_set_linker_script(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/memmap_rp2040.ld
 )
 
+# направить стандартный ввод-вывод в USB
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
+# UART как канал не используем
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
+
 
 pico_add_extra_outputs(${PROJECT_NAME})
