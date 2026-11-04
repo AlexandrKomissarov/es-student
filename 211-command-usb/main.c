@@ -5,6 +5,7 @@
 #include "led.h"
 #include "log.h"
 #include "device.h"
+#include <string.h>
 
 #define LINE_SIZE 32
 
