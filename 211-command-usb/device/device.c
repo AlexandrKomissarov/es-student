@@ -1,12 +1,11 @@
 #include "device.h"
 
-#include <string.h>
 #include <stdio.h>
 #include "pico/unique_id.h"
 #include "hardware/regs/addressmap.h"
 #include "hardware/regs/sysinfo.h"
 #include "pico/version.h"
-
+    
 void device_info(void)
 {   
     char board_id[PICO_UNIQUE_BOARD_ID_SIZE_BYTES * 2 + 1];
@@ -26,5 +25,5 @@ void device_info(void)
     printf("board: %s\n", DEVICE_BOARD);
     printf("serial: %s\n", board_id);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n", manufacturer, part, revision);
-    
+    printf("pico-sdk: %s\n", PICO_SDK_VERSION_STRING);
 }

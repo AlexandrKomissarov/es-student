@@ -1,17 +1,16 @@
-#include "pico/unique_id.h"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include "pico/unique_id.h"
 #include <stdio.h>
 #include <string.h>
 #include "led.h"
 #include "log.h"
 #include "device.h"
- 
+
 #define LINE_SIZE 32
 
 char line[LINE_SIZE];
-uint line_length = 0;
-
+uint line_length = 0; 
 const uint BUTTON_PIN = 15;
 const uint DEBOUNCE_MS = 20;
 
@@ -28,26 +27,64 @@ void handle_command(const char *command)
     if (strcmp(command, "enable") == 0)
     {
         // включаем светодиод и сообщаем новое состояние
+        led_set(true);
+        LOG_INF("led %s\n", led_is_on() ? "on" : "off");
     }
     else if (strcmp(command, "disable") == 0)
     {
         // выключаем светодиод и сообщаем новое состояние
+        led_set(false);
+        LOG_INF("led %s\n", led_is_on() ? "on" : "off");
     }
     else if (strcmp(command, "info") == 0)
     {
         // печатаем паспорт устройства
+        device_info();
     }
     else if (strcmp(command, "version") == 0)
     {
         // печатаем строку журнала о версии прошивки
+        log_version();
     }
     else
     {
-        LOG_ERR("unknown command: %s\n", command);
+        LOG_ERR("unknown command: %c\n", command);
     }
 }
 
-int main(void)
+void read_line(void)
+{
+    int symbol = getchar_timeout_us(0);
+
+    if (symbol == PICO_ERROR_TIMEOUT)
+    {
+        return;
+    }
+
+    if (symbol == '\r' || symbol == '\n')
+    {
+        putchar('\n');
+        line[line_length] = '\0';
+
+        if (line_length > 0)
+        {
+            LOG_DBG("got %s\n", line);
+            handle_command(line);
+        }
+
+        line_length = 0;
+        return;
+    }
+
+    if (line_length + 1 < LINE_SIZE)
+    {
+        line[line_length] = (char)symbol;
+        line_length = line_length + 1;
+        putchar(symbol);
+    }
+}
+
+int main()
 {
     stdio_init_all();
 
@@ -63,37 +100,17 @@ int main(void)
     bool previous = false;
 
     while (1)
-    {              
-        void read_line(void)
+    {
+        bool current = get_button_debounce(BUTTON_PIN);
+
+        if (previous == true && current == false)
         {
-            int symbol = getchar_timeout_us(0);
-
-            if (symbol == PICO_ERROR_TIMEOUT)
-            {
-                return;
-            }
-
-            if (symbol == '\r' || symbol == '\n')
-            {
-                putchar('\n');
-                line[line_length] = '\0';
-
-                if (line_length > 0)
-                {
-                    LOG_DBG("got %s\n", line);
-                    handle_command(line);
-                }
-
-                line_length = 0;
-                return;
-            }
-
-            if (line_length + 1 < LINE_SIZE)
-            {
-                line[line_length] = (char)symbol;
-                line_length = line_length + 1;
-                putchar(symbol);
-            }
+            led_toggle();
+            LOG_DBG("led %s\n", led_is_on() ? "on" : "off");
         }
+
+        previous = current;
+        
+        read_line();
     }
 }
