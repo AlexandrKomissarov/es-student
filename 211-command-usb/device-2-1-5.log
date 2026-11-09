@@ -3,13 +3,13 @@
 устройство: 2e8a:000a
 серийный номер: 5303284730E8AA1C
 порт: COM4
-начало: 2026-11-09T22:56:29
+начало: 2026-11-09T23:12:37
    0.000 --> dev_info
-   0.181 <-- dev_info
-   0.183 <-- dbg read_line:119 got dev_info
-   0.187 <-- device_card     0x20000f40 sizeof 24
-   0.190 <-- - revision      0x20000f40     1      0 0x01
-   0.194 <-- - version       0x20000f44     4      4 0x00000100
-   0.199 <-- - name          0x20000f48    13      8 RP2040-PICO
-   0.202 <-- total: fields 18, sizeof 24, padding 6
+   0.169 <-- dev_info
+   0.172 <-- dbg read_line:119 got dev_info
+   0.175 <-- device_card     0x20000f40 sizeof 24
+   0.179 <-- - revision      0x20000f40     1      0 0x01
+   0.183 <-- - version       0x20000f44     4      4 0x00000100
+   0.188 <-- - name          0x20000f48    13      8 RP2040-PICO
+   0.191 <-- total: fields 18, sizeof 24, padding 6
 итог: отправлено команд 1, принято строк 7
