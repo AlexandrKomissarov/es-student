@@ -63,6 +63,11 @@ void cmd_fw_info(void)
     // печатаем карту объектов прошивки
     fw_info();
 }
+void cmd_dev_info(void)
+{
+    // печатаем паспорт устройства в памяти: адреса, размеры, смещения
+    dev_info();
+}
 
 const struct command_t commands[] = {
     { "enable", cmd_enable },
@@ -72,6 +77,7 @@ const struct command_t commands[] = {
     { "ping", cmd_ping },
     { "mem_info", cmd_mem_info },
     { "fw_info", cmd_fw_info },
+    { "dev_info", cmd_dev_info },
 };
 
 const uint command_count = sizeof(commands) / sizeof(commands[0]);
