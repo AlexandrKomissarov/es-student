@@ -5,9 +5,9 @@
 #include <stddef.h>   // для offsetof
 
 struct info_t {
-    uint8_t revision;
     uint32_t version;
     char name[13];
+    uint8_t revision;
 };
 
 // Объявление переменной для других модулей
