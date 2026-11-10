@@ -6,10 +6,13 @@
 #include "pico/stdlib.h" // PICO_FLASH_SIZE_BYTES с описанием платы
 #include "command.h"
 #include "device.h"
+#include "led.h"
+
 
 // размеры ОЗУ и ПЗУ из RP2040 Datasheet, раздел 2.6. Memory
 #define SRAM_SIZE (264 * 1024)
 #define ROM_SIZE  (16 * 1024)
+#define VECTOR_TABLE 0x10000100
 
 int main(void);
 
@@ -150,4 +153,24 @@ void fw_info(void)
 
     // возвращаем блок кучи
     free(heap_variable);
+}
+
+void boot_info(void)
+{
+    // указатель на таблицу векторов и два первых слова из неё
+    const uint32_t *vectors = (const uint32_t *)VECTOR_TABLE;
+    uint32_t stack_top = vectors[0];
+    uint32_t reset_handler = vectors[1];
+
+    // указатель на регистр GPIO_IN и разряд вывода светодиода
+    volatile uint32_t *gpio_in = (uint32_t *)0xd0000004;
+    uint32_t level = (*gpio_in >> led_pin()) & 1u;
+
+    printf("vector table   0x%08x\n", (unsigned)VECTOR_TABLE);
+    printf("  stack top    0x%08x\n", stack_top);
+    printf("  reset        0x%08x\n", reset_handler);
+    printf("  reset (even) 0x%08x\n", reset_handler & ~1u);
+    printf("gpio in        0x%08x\n", (unsigned)(uintptr_t)gpio_in);
+    printf("  led bit      %u\n", level);
+    printf("  gpio_get     %u\n", gpio_get(led_pin()) ? 1u : 0u);
 }

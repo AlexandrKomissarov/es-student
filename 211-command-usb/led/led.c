@@ -1,9 +1,16 @@
+//led.c
 #include "led.h"
 #include "hardware/gpio.h"
 
 const uint LED_PIN = 25;
 
 static bool led_state = false;
+
+uint led_pin(void)
+{
+    // номер вывода — внутреннее знание модуля, наружу идёт ответ
+    return LED_PIN;
+}
 
 void led_init(void)
 {

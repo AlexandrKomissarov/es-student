@@ -49,24 +49,34 @@ void cmd_version(void)
     // печатаем строку журнала о версии прошивки
     log_version();
 }
+
 void cmd_ping(void)
 {
     printf("pong\n");
 }
+
 void cmd_mem_info(void)
 {
     // печатаем карту памяти устройства
     mem_info();
 }
+
 void cmd_fw_info(void)
 {
     // печатаем карту объектов прошивки
     fw_info();
 }
+
 void cmd_dev_info(void)
 {
     // печатаем паспорт устройства в памяти: адреса, размеры, смещения
     dev_info();
+}
+
+void cmd_boot_info(void)
+{
+    // печатаем сведения о старте прошивки и разряд светодиода из регистра
+    boot_info();
 }
 
 const struct command_t commands[] = {
@@ -78,6 +88,7 @@ const struct command_t commands[] = {
     { "mem_info", cmd_mem_info },
     { "fw_info", cmd_fw_info },
     { "dev_info", cmd_dev_info },
+    { "boot_info", cmd_boot_info },
 };
 
 const uint command_count = sizeof(commands) / sizeof(commands[0]);

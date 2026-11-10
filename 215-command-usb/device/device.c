@@ -39,20 +39,17 @@ void device_info(void)
 
 void dev_info(void)
 {
-    // адрес переменной и её размер
-    printf("device_card     0x%08x sizeof %u\n",
+    // шапка таблицы
+    printf("%-15s %-11s %5s %6s %s\n",
+           "struct", "address", "size", "offset", "value");
+
+    // адрес переменной и размер структуры
+    printf("%-15s 0x%08x %5u\n",
+           "device_card",
            (unsigned)(uintptr_t)&device_card,
            (unsigned)sizeof(device_card));
 
-    // revision: адрес, размер, смещение, значение
-    printf("- %-13s 0x%08x %5u %6u 0x%02x\n",
-           "revision",
-           (unsigned)(uintptr_t)&device_card.revision,
-           (unsigned)sizeof(device_card.revision),
-           (unsigned)offsetof(struct info_t, revision),
-           device_card.revision);
-
-    // version
+    // version: адрес, размер, смещение, значение
     printf("- %-13s 0x%08x %5u %6u 0x%08x\n",
            "version",
            (unsigned)(uintptr_t)&device_card.version,
@@ -68,12 +65,20 @@ void dev_info(void)
            (unsigned)offsetof(struct info_t, name),
            device_card.name);
 
-    // итог: прибор считает сам — сумма полей, sizeof и заполнение
-    unsigned fields = (unsigned)sizeof(device_card.revision) +
-                      (unsigned)sizeof(device_card.version) +
-                      (unsigned)sizeof(device_card.name);
+    // revision: значение печатаем десятичным
+    printf("- %-13s 0x%08x %5u %6u %u\n",
+           "revision",
+           (unsigned)(uintptr_t)&device_card.revision,
+           (unsigned)sizeof(device_card.revision),
+           (unsigned)offsetof(struct info_t, revision),
+           device_card.revision);
 
-    printf("total: fields %u, sizeof %u, padding %u\n",
+    // итог: прибор считает сам — одной строкой, как в образце
+    unsigned fields = (unsigned)sizeof(device_card.version) +
+                      (unsigned)sizeof(device_card.name) +
+                      (unsigned)sizeof(device_card.revision);
+
+    printf("fields %u, sizeof %u, padding %u\n",
            fields,
            (unsigned)sizeof(device_card),
            (unsigned)sizeof(device_card) - fields);
