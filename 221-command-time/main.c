@@ -9,6 +9,7 @@
 #include "memory.h"
 #include "command.h"
 #include "clock.h"
+#include "profiling.h"
 
 #define LINE_SIZE 32
 
@@ -108,6 +109,18 @@ void cmd_uptime(void)
     // печатаем время с момента запуска прибора в миллисекундах
     uptime();
 }
+void cmd_main_time_exec(void)
+{
+    // печатаем среднее и максимум длительности итерации
+    printf("iteration avg %.2f us, max %u us\n", profiling_avg_us(), (unsigned)profiling_max_us());
+}
+void cmd_main_time_reset(void)
+{
+    // сбрасываем максимум длительности итерации
+    profiling_reset_max();
+    printf("max reset\n");
+}
+
 
 const struct command_t commands[] = {
     { "info", cmd_info },
@@ -120,6 +133,9 @@ const struct command_t commands[] = {
     { "clk_info", cmd_clk_info },
     { "uptime", cmd_uptime },
     { "calc_pi", cmd_calc_pi },
+    { "main_time_exec", cmd_main_time_exec },
+    { "main_time_reset", cmd_main_time_reset },
+
 };
 
 const uint command_count = sizeof(commands) / sizeof(commands[0]);
@@ -180,9 +196,13 @@ int main()
     stdio_init_all();
 
     led_init();
+
+    profiling_init();
     
     while (1)
     {
+        profiling_iteration();
+
         blink();
         
         read_line();

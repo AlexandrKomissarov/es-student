@@ -1,0 +1,63 @@
+задание: 2.2.2
+проект: 221-command-time
+устройство: 2e8a:000a
+серийный номер: 5303284730E8AA1C
+порт: COM4
+начало: 2026-11-11T14:44:10
+   0.000 --> uptime
+   0.003 <-- uptime
+   0.006 <-- dbg read_line:127 got uptime
+   0.008 <-- uptime: 239391 ms
+   0.408 --> boot_info
+   0.410 <-- boot_info
+   0.413 <-- dbg read_line:127 got boot_info
+   0.415 <-- vector table   0x10000100
+   0.417 <-- stack top    0x20042000
+   0.420 <-- reset        0x100001f7
+   0.423 <-- reset (even) 0x100001f6
+   0.426 <-- gpio in        0xd0000004
+   0.428 <-- led bit      1
+   0.430 <-- gpio_get     1
+   0.831 --> uptime
+   0.832 <-- uptime
+   0.835 <-- dbg read_line:127 got uptime
+   0.836 <-- uptime: 240222 ms
+   1.236 --> boot_info
+   1.237 <-- boot_info
+   1.240 <-- dbg read_line:127 got boot_info
+   1.242 <-- vector table   0x10000100
+   1.245 <-- stack top    0x20042000
+   1.247 <-- reset        0x100001f7
+   1.249 <-- reset (even) 0x100001f6
+   1.251 <-- gpio in        0xd0000004
+   1.253 <-- led bit      1
+   1.254 <-- gpio_get     1
+   1.654 --> uptime
+   1.655 <-- uptime
+   1.658 <-- dbg read_line:127 got uptime
+   1.659 <-- uptime: 241045 ms
+   2.060 --> boot_info
+   2.061 <-- boot_info
+   2.064 <-- dbg read_line:127 got boot_info
+   2.066 <-- vector table   0x10000100
+   2.068 <-- stack top    0x20042000
+   2.070 <-- reset        0x100001f7
+   2.072 <-- reset (even) 0x100001f6
+   2.075 <-- gpio in        0xd0000004
+   2.076 <-- led bit      0
+   2.078 <-- gpio_get     0
+   2.479 --> uptime
+   2.481 <-- uptime
+   2.483 <-- dbg read_line:127 got uptime
+   2.485 <-- uptime: 241870 ms
+   2.885 --> boot_info
+   2.887 <-- boot_info
+   2.889 <-- dbg read_line:127 got boot_info
+   2.892 <-- vector table   0x10000100
+   2.894 <-- stack top    0x20042000
+   2.896 <-- reset        0x100001f7
+   2.898 <-- reset (even) 0x100001f6
+   2.901 <-- gpio in        0xd0000004
+   2.902 <-- led bit      0
+   2.904 <-- gpio_get     0
+итог: отправлено команд 8, принято строк 48
