@@ -120,7 +120,16 @@ void cmd_main_time_reset(void)
     profiling_reset_max();
     printf("max reset\n");
 }
-
+void cmd_clk_sys_low(void)
+{
+    // переводим ядро на пониженную частоту
+    clk_sys_low();
+}
+void cmd_clk_sys_default(void)
+{
+    // возвращаем ядро на рабочую частоту
+    clk_sys_default();
+}
 
 const struct command_t commands[] = {
     { "info", cmd_info },
@@ -135,7 +144,8 @@ const struct command_t commands[] = {
     { "calc_pi", cmd_calc_pi },
     { "main_time_exec", cmd_main_time_exec },
     { "main_time_reset", cmd_main_time_reset },
-
+    { "clk_sys_low", cmd_clk_sys_low },
+    { "clk_sys_default", cmd_clk_sys_default },
 };
 
 const uint command_count = sizeof(commands) / sizeof(commands[0]);
