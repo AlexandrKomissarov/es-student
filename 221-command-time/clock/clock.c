@@ -7,6 +7,9 @@
 // пониженная частота ядра: вдвое ниже рабочей 125 МГц
 const uint32_t CLK_SYS_LOW_KHZ = 62500;
 
+// set_sys_clock_khz() вызывает set_sys_clock_pll(), а та переводит clk_peri
+// на PLL для USB, 48 МГц. Так настроено по умолчанию:
+// PICO_CLOCK_ADJUST_PERI_CLOCK_WITH_SYS_CLOCK равен 0.
 static void clk_sys_set(uint32_t khz)
 {
     if (set_sys_clock_khz(khz, false))
