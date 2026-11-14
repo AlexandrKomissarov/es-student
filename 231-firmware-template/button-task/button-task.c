@@ -6,7 +6,7 @@
 #define BUTTON_PIN 15u
 
 // время дребезга: 20 мс в микросекундах
-#define BUTTON_DEBOUNCE_US (20u * 1000u)
+#define BUTTON_DEBOUNCE_US (20 * 1000)
 
 // машина состояний кнопки
 typedef enum
