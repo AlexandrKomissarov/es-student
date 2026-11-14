@@ -4,7 +4,7 @@
 #include "stdio-text-protocol.h"
 #include "api.h"
 #include "led-task.h"
-
+#include "button-task.h"
 
 int main()
 {
@@ -15,7 +15,8 @@ int main()
     profiling_init();
     // инициализируем задачу светодиода: период 1000 мс, состояние «мигает»
     led_task_init();
-
+    // инициализируем задачу кнопки: вывод GP15 на вход с подтяжкой
+    button_task_init();
     // инициализируем протокол строк терминала
     stdio_text_protocol_init();
 
@@ -26,7 +27,8 @@ int main()
 
         // задача светодиода: переключает светодиод по полпериода
         led_task_handle();
-        
+        // задача кнопки: подавляет дребезг машиной состояний
+        button_task_handle();
         // остальные задачи суперцикла
         
 

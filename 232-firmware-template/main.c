@@ -1,0 +1,40 @@
+// main.c
+#include "pico/stdlib.h"
+#include "profiling.h"
+#include "stdio-text-protocol.h"
+#include "api.h"
+#include "led-task.h"
+
+
+int main()
+{
+    // инициализируем стандартный ввод-вывод
+    stdio_init_all();
+
+    // запоминаем начальное показание часов для профилирования
+    profiling_init();
+    // инициализируем задачу светодиода: период 1000 мс, состояние «мигает»
+    led_task_init();
+
+    // инициализируем протокол строк терминала
+    stdio_text_protocol_init();
+
+    while (1)
+    {
+        // учитываем прошлую итерацию
+        profiling_iteration();
+
+        // задача светодиода: переключает светодиод по полпериода
+        led_task_handle();
+        
+        // остальные задачи суперцикла
+        
+
+        // принятая строка становится командой, команда — действием прибора
+        const command_t *command = stdio_text_protocol_handle();
+        if (command != NULL)
+        {
+            api_handle(command);
+        }
+    }
+}

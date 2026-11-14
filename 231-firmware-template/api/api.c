@@ -8,6 +8,7 @@
 #include "device.h"
 #include "profiling.h"
 #include "led-task.h"
+#include "button-task.h"
 
 // прикидка: за член ряда 4 операции с double, 175 + 110 + 190 + 110 = 585 тактов;
 // 1 000 000 членов по 585 тактов при 125 МГц — около 4,7 с
@@ -189,6 +190,14 @@ static void cmd_led_period(const command_t *command)
     print_led_state();
 }
 
+static void cmd_button(const command_t *command)
+{
+    (void)command;
+    printf("button: %s, presses %u\n",
+           button_task_is_pressed() ? "pressed" : "released",
+           (unsigned)button_task_get_press_count());
+}
+
 // таблица команд со справкой на английском; help в таблице нет —
 // api_handle() печатает справку прямо из таблицы
 static const api_command_t commands[] = {
@@ -201,6 +210,7 @@ static const api_command_t commands[] = {
     { "led_disable", "led off", cmd_led_disable },
     { "led_blink", "blink the led", cmd_led_blink },
     { "led_period", "set blink period: led_period <period_ms>", cmd_led_period },
+    { "button", "button state and presses", cmd_button },
 };
 
 static const uint api_command_count = sizeof(commands) / sizeof(commands[0]);
