@@ -47,6 +47,8 @@ static const command_t *make_command(void)
                 // слов больше, чем мест в argv
                 command.truncated = true;
             }
+
+            word++;
         }
 
     }

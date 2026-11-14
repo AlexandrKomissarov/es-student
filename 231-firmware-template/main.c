@@ -1,34 +1,20 @@
 // main.c
 #include "pico/stdlib.h"
-#include "led.h"
 #include "profiling.h"
 #include "stdio-text-protocol.h"
 #include "api.h"
+#include "led-task.h"
 
-const uint BLINK_HALF_PERIOD_MS = 500;
-
-uint64_t last_toggle_us = 0;
-
-void blink(void)
-{
-    uint64_t now_us = time_us_64();
-
-    if (now_us - last_toggle_us >= BLINK_HALF_PERIOD_MS * 1000)
-    {
-        last_toggle_us = now_us;
-        led_toggle();
-    }
-}
 
 int main()
 {
-    // инициализируем стандартный ввод-вывод и светодиод
+    // инициализируем стандартный ввод-вывод
     stdio_init_all();
-
-    led_init();
 
     // запоминаем начальное показание часов для профилирования
     profiling_init();
+    // инициализируем задачу светодиода: период 1000 мс, состояние «мигает»
+    led_task_init();
 
     // инициализируем протокол строк терминала
     stdio_text_protocol_init();
@@ -38,8 +24,11 @@ int main()
         // учитываем прошлую итерацию
         profiling_iteration();
 
-        // мигаем светодиодом
-        blink();
+        // задача светодиода: переключает светодиод по полпериода
+        led_task_handle();
+        
+        // остальные задачи суперцикла
+        
 
         // принятая строка становится командой, команда — действием прибора
         const command_t *command = stdio_text_protocol_handle();
