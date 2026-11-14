@@ -171,9 +171,15 @@ static void cmd_led_blink(const command_t *command)
 
 static void cmd_led_period(const command_t *command)
 {
+     if (command->argc != 1)
+    {
+        printf("error: usage led_period <period_ms>\n");
+        return;
+    }
+
     uint32_t period_ms;
 
-    if (command->argc != 1 || !parse_u32(command->argv[0], &period_ms) ||
+    if (!parse_u32(command->argv[0], &period_ms) ||
         !led_task_set_period_ms(period_ms))
     {
         printf("error: period_ms must be greater than 0\n");
