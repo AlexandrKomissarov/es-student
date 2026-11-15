@@ -37,6 +37,7 @@ static bool parse_u32(const char *text, uint32_t *number)
     *number = (uint32_t)value;
     return true;
 }
+
 static void cmd_pi_start(const command_t *command)
 {
     uint32_t terms = 1000000;
@@ -55,7 +56,7 @@ static void cmd_pi_start(const command_t *command)
 
     if (terms == 0)
     {
-        printf("error: zero terms\n");
+        printf("error: terms must be greater than 0\n");
         return;
     }
 
@@ -96,27 +97,57 @@ static void cmd_pi(const command_t *command)
 
 static void cmd_info(const command_t *command)
 {
-    // печатаем паспорт устройства: имя, версия и остальное по приложению Б
-    device_info();
+    (void)command;
+
+    // паспорт печатает api из структуры модуля device
+    device_info_t info;
+    device_get_info(&info);
+
+    printf("name: %s\n", info.name);
+    printf("version: %s\n", info.version);
+    printf("project: %s\n", info.project);
+    printf("repo: %s\n", info.repo);
+    printf("board: %s\n", info.board);
+    printf("serial: %s\n", info.serial);
+    printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n",
+           (unsigned)info.chip_manufacturer,
+           (unsigned)info.chip_part,
+           (unsigned)info.chip_revision);
+    printf("pico-sdk: %s\n", info.sdk_version);
 }
 
 static void cmd_uptime(const command_t *command)
 {
+    (void)command;
+
     // печатаем время с момента запуска прибора в миллисекундах
     printf("uptime: %llu ms\n", time_us_64() / 1000);
 }
 
-static void cmd_main_time_exec(const command_t *command)
+// печатаем все заведённые секундомеры
+static void cmd_profiling(const command_t *command)
 {
-    // печатаем среднее и максимум длительности итерации
-    printf("iteration avg %.2f us, max %u us\n", profiling_avg_us(), (unsigned)profiling_max_us());
+    (void)command;
+
+    profiling_result_t result;
+
+    for (uint32_t id = 0; id < PROFILING_STOPWATCH_COUNT; id++)
+    {
+        if (profiling_get(id, &result))
+        {
+            printf("%-10s count %-10u mean %.2f us  max %u us\n",
+                   result.name, (unsigned)result.count,
+                   result.mean_us, (unsigned)result.max_us);
+        }
+    }
 }
 
-static void cmd_main_time_reset(const command_t *command)
+static void cmd_profiling_reset(const command_t *command)
 {
-    // сбрасываем максимум длительности итерации
-    profiling_reset_max();
-    printf("max reset\n");
+    (void)command;
+
+    profiling_reset();
+    printf("profiling reset\n");
 }
 
 typedef void (*api_callback_t)(const command_t *command);
@@ -205,8 +236,6 @@ static void cmd_button(const command_t *command)
 static const api_command_t commands[] = {
     { "info", "device passport", cmd_info },
     { "uptime", "time since reset", cmd_uptime },
-    { "main_time_exec", "superloop iteration: average and maximum", cmd_main_time_exec },
-    { "main_time_reset", "reset maximum iteration", cmd_main_time_reset },
     { "led_enable", "led on", cmd_led_enable },
     { "led_disable", "led off", cmd_led_disable },
     { "led_blink", "blink the led", cmd_led_blink },
@@ -214,6 +243,8 @@ static const api_command_t commands[] = {
     { "button", "button state and presses", cmd_button },
     { "pi_start", "start pi calculation: pi_start [terms]", cmd_pi_start },
     { "pi", "pi result or state", cmd_pi },
+    { "profiling", "stopwatch results", cmd_profiling },
+    { "profiling_reset", "reset stopwatch results", cmd_profiling_reset },
 };
 
 static const uint api_command_count = sizeof(commands) / sizeof(commands[0]);
@@ -256,4 +287,3 @@ void api_handle(const command_t *command)
 
     printf("error: unknown command '%s', try help\n", command->name);
 }
-

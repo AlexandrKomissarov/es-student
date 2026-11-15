@@ -2,57 +2,76 @@
 #include "profiling.h"
 #include "pico/stdlib.h"
 
-// итерация около 2 мкс, за секунду их около 500 000;
-// ближайшая степень двойки 2^19 = 524 288, среднее помнит около секунды
-#define AVG_SHIFT 19
+static const char *watch_name[PROFILING_STOPWATCH_COUNT];
+static bool watch_live[PROFILING_STOPWATCH_COUNT];
 
-// замер в 1/256 долях микросекунды, чтобы среднее не теряло дробную часть
-#define FRACTION_SHIFT 8
+static uint64_t watch_started_us[PROFILING_STOPWATCH_COUNT];
+static uint32_t watch_count[PROFILING_STOPWATCH_COUNT];
+static uint32_t watch_sum_us[PROFILING_STOPWATCH_COUNT];
+static uint32_t watch_max_us[PROFILING_STOPWATCH_COUNT];
 
-// показание часов на прошлой итерации
-static uint32_t previous_us = 0;
-
-// самый долгий замер итерации
-static uint32_t max_us = 0;
-
-// сумма для экспоненциального среднего, в 1/256 долях микросекунды;
-// в N раз больше среднего, N = 2^AVG_SHIFT
-static uint64_t avg_sum = 0;
-
-void profiling_init(void)
+void profiling_stopwatch_init(uint32_t id, const char *name)
 {
-    // запоминаем начальное показание часов
-    previous_us = time_us_32();
-}
-
-void profiling_iteration(void)
-{
-    // разность показаний равна длительности прошлой итерации целиком
-    uint32_t now_us = time_us_32();
-    uint32_t iteration_us = now_us - previous_us;
-    previous_us = now_us;
-
-    if (iteration_us > max_us)
+    if (id >= PROFILING_STOPWATCH_COUNT)
     {
-        max_us = iteration_us;
+        return;
     }
 
-    // вычитаем N-ю часть суммы и прибавляем новый замер
-    avg_sum = avg_sum - (avg_sum >> AVG_SHIFT) + ((uint64_t)iteration_us << FRACTION_SHIFT);
+    watch_name[id] = name;
+    watch_live[id] = true;
+    watch_count[id] = 0;
+    watch_sum_us[id] = 0;
+    watch_max_us[id] = 0;
 }
 
-float profiling_avg_us(void)
+void profiling_start(uint32_t id)
 {
-    // переводим из 1/256 долей микросекунды в микросекунды
-    return (float)(avg_sum >> AVG_SHIFT) / (1 << FRACTION_SHIFT);
+    if (id < PROFILING_STOPWATCH_COUNT && watch_live[id])
+    {
+        watch_started_us[id] = time_us_64();
+    }
 }
 
-uint32_t profiling_max_us(void)
+void profiling_stop(uint32_t id)
 {
-    return max_us;
+    if (id >= PROFILING_STOPWATCH_COUNT || !watch_live[id])
+    {
+        return;
+    }
+
+    uint32_t elapsed_us = (uint32_t)(time_us_64() - watch_started_us[id]);
+
+    watch_count[id]++;
+    watch_sum_us[id] += elapsed_us;
+
+    if (elapsed_us > watch_max_us[id])
+    {
+        watch_max_us[id] = elapsed_us;
+    }
 }
 
-void profiling_reset_max(void)
+bool profiling_get(uint32_t id, profiling_result_t *result)
 {
-    max_us = 0;
+    if (id >= PROFILING_STOPWATCH_COUNT || !watch_live[id] || result == NULL)
+    {
+        return false;
+    }
+
+    result->name = watch_name[id];
+    result->count = watch_count[id];
+    result->mean_us = watch_count[id] > 0
+        ? (float)watch_sum_us[id] / watch_count[id]
+        : 0.0f;
+    result->max_us = watch_max_us[id];
+    return true;
+}
+
+void profiling_reset(void)
+{
+    for (uint32_t id = 0; id < PROFILING_STOPWATCH_COUNT; id++)
+    {
+        watch_count[id] = 0;
+        watch_sum_us[id] = 0;
+        watch_max_us[id] = 0;
+    }
 }
