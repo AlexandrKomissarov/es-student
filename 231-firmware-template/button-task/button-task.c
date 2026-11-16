@@ -1,8 +1,6 @@
-// button-task.c
 #include "button-task.h"
 #include "led-task.h"
-#include "hardware/gpio.h"
-#include "systime/systime.h"
+#include "pico/stdlib.h"
 
 // кнопка подключена между GP15 и землёй (п1.2.2)
 #define BUTTON_PIN 15u
@@ -20,7 +18,7 @@ typedef enum
 } button_state_t;
 
 static button_state_t button_state;
-static uint64_t button_edge_us;
+static uint32_t button_edge_us;
 static uint32_t button_presses;
 
 void button_task_init(void)
@@ -38,7 +36,7 @@ void button_task_handle(void)
 {
     // нажатая кнопка замыкает вывод на землю и даёт ноль
     bool pressed = !gpio_get(BUTTON_PIN);
-    uint64_t now_us = systime_us();
+    uint32_t now_us = time_us_32();
 
     switch (button_state)
     {

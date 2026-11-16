@@ -1,18 +1,15 @@
 // api.c
 #include "api.h"
-#include "firmware.h"
+#include "pico/stdlib.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <stddef.h>
-#include "device/device.h"
-#include "profiling/profiling.h"
+#include "device.h"
+#include "profiling.h"
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
-#include "systime/systime.h"
-#include "stdio-text-protocol/stdio-text-protocol.h"
 
 static bool parse_u32(const char *text, uint32_t *number)
 {
@@ -102,14 +99,14 @@ static void cmd_info(const command_t *command)
 {
     (void)command;
 
-    // паспорт печатает api: константы прошивки из firmware.h, плата из device
+    // паспорт печатает api из структуры модуля device
     device_info_t info;
     device_get_info(&info);
 
-    printf("name: %s\n", FIRMWARE_NAME);
-    printf("version: %s\n", FIRMWARE_VERSION);
-    printf("project: %s\n", FIRMWARE_PROJECT);
-    printf("repo: %s\n", FIRMWARE_REPO);
+    printf("name: %s\n", info.name);
+    printf("version: %s\n", info.version);
+    printf("project: %s\n", info.project);
+    printf("repo: %s\n", info.repo);
     printf("board: %s\n", info.board);
     printf("serial: %s\n", info.serial);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n",
@@ -124,7 +121,7 @@ static void cmd_uptime(const command_t *command)
     (void)command;
 
     // печатаем время с момента запуска прибора в миллисекундах
-    printf("uptime: %llu ms\n", (unsigned long long)(systime_us() / 1000));
+    printf("uptime: %llu ms\n", time_us_64() / 1000);
 }
 
 // печатаем все заведённые секундомеры
@@ -250,14 +247,14 @@ static const api_command_t commands[] = {
     { "profiling_reset", "reset stopwatch results", cmd_profiling_reset },
 };
 
-static const uint32_t api_command_count = sizeof(commands) / sizeof(commands[0]);
+static const uint api_command_count = sizeof(commands) / sizeof(commands[0]);
 
 static void api_help(void)
 {
     // строка о себе и справка всех команд таблицы
     printf("%-17s%s\n", "help", "list of commands");
 
-    for (uint32_t i = 0; i < api_command_count; i++)
+    for (uint i = 0; i < api_command_count; i++)
     {
         printf("%-17s%s\n", commands[i].name, commands[i].help);
     }
@@ -279,7 +276,7 @@ void api_handle(const command_t *command)
         return;
     }
 
-    for (uint32_t i = 0; i < api_command_count; i++)
+    for (uint i = 0; i < api_command_count; i++)
     {
         if (strcmp(command->name, commands[i].name) == 0)
         {
@@ -290,4 +287,3 @@ void api_handle(const command_t *command)
 
     printf("error: unknown command '%s', try help\n", command->name);
 }
-

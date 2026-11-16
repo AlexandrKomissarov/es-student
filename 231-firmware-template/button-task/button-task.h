@@ -1,4 +1,4 @@
-// button-task.h
+//buttn-task.h
 #pragma once
 
 #include <stdbool.h>
@@ -8,7 +8,7 @@
 void button_task_init(void);
 void button_task_handle(void);
 
-// кнопку считают нажатой и в «нажата», и в «отпускание»:
+// кнопку считают нажатой и в «нажата», и в «отпускание?»:
 // пока отпускание не подтвердилось, она ещё нажата
 bool button_task_is_pressed(void);
 
