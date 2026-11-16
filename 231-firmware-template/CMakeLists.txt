@@ -40,6 +40,10 @@ target_link_libraries(${PROJECT_NAME}
     stdio_text_protocol
 )
 
+# профилирование включено по умолчанию в этой сборке;
+# PUBLIC — чтобы флаг видела и прошивка через #if !PROFILING_ENABLED
+target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
+
 # направить стандартный ввод-вывод в USB
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 # UART как канал не используем
