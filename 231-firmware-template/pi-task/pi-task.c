@@ -1,6 +1,7 @@
 // pi-task.c
 #include "pi-task.h"
-#include "pico/stdlib.h"
+#include <stddef.h>
+#include "systime/systime.h"
 
 // прикидка: член ряда — около 585 тактов (п2.2.3), при 125 МГц это 4,7 мкс;
 // порция должна уложиться в 0,5 мс = 500 мкс, то есть до 106 членов;
@@ -28,7 +29,7 @@ bool pi_task_start(uint32_t terms)
     pi_k = 0;
     pi_sum = 0.0;
     pi_sign = 1.0;
-    pi_start_us = time_us_64();
+    pi_start_us = systime_us();
     pi_state = PI_STATE_RUNNING;
     return true;
 }
@@ -60,7 +61,7 @@ void pi_task_handle(void)
 
     if (pi_k >= pi_terms)
     {
-        pi_end_us = time_us_64();
+        pi_end_us = systime_us();
         pi_state = PI_STATE_READY;
     }
 }
