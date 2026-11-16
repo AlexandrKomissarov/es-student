@@ -2,6 +2,7 @@
 #include "led-task.h"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include "systime/systime.h"
 
 #define LED_TASK_DEFAULT_PERIOD_MS 1000
 
@@ -9,29 +10,6 @@
 static led_state_t led_state = LED_STATE_OFF;
 static uint32_t led_period_ms = LED_TASK_DEFAULT_PERIOD_MS;
 static uint64_t last_us = 0;
-
-// проверка периода: следующее срабатывание отсчитывается от прошлого;
-// если отстали больше чем на период — пропуски не догоняем, отсчёт заново
-static bool period_elapsed(uint64_t *last_us, uint64_t period_us)
-{
-    uint64_t now = time_us_64();
-
-    if (now - *last_us < period_us)
-    {
-        return false;
-    }
-
-    if (now - *last_us <= 2 * period_us)
-    {
-        *last_us += period_us;
-    }
-    else
-    {
-        *last_us = now;
-    }
-
-    return true;
-}
 
 // переключить светодиод на противоположный
 static void toggle(void)
@@ -66,7 +44,7 @@ void led_task_set_state(led_state_t state)
     case LED_STATE_BLINK:
         // первое переключение сразу, метка времени — с этого момента
         toggle();
-        last_us = time_us_64();
+        last_us = systime_us();
         break;
     }
 }
@@ -82,7 +60,7 @@ void led_task_handle(void)
 
     case LED_STATE_BLINK:
         // период — полный цикл мигания, переключаемся каждые полпериода
-        if (period_elapsed(&last_us, (uint64_t)led_period_ms * 1000 / 2))
+        if (systime_period_elapsed(&last_us, (uint64_t)led_period_ms * 1000 / 2))
         {
             toggle();
         }
