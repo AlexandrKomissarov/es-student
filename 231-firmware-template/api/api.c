@@ -132,6 +132,11 @@ static void cmd_profiling(const command_t *command)
 {
     (void)command;
 
+#if !PROFILING_ENABLED
+    printf("profiling is disabled in this build\n");
+    return;
+#endif
+
     profiling_result_t result;
 
     for (uint32_t id = 0; id < PROFILING_STOPWATCH_COUNT; id++)

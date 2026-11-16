@@ -26,7 +26,9 @@ bool systime_period_elapsed(uint64_t *last_us, uint64_t period_us)
         return false;
     }
 
-    *last_us = now_us;
+    // сдвигаем метку на период, а не в текущий момент:
+    // так метка остаётся на сетке расписания, и накопленный
+    // дрейф гасится при следующем срабатывании
+    *last_us += period_us;
     return true;
 }
-
