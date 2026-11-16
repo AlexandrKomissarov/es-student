@@ -29,3 +29,4 @@ bool systime_period_elapsed(uint64_t *last_us, uint64_t period_us)
     *last_us = now_us;
     return true;
 }
+

@@ -24,3 +24,4 @@ uint32_t led_task_get_period_ms(void);
 // текущее состояние — командам api нужно отвечать «led: ...»
 led_state_t led_task_get_state(void);
 
+
