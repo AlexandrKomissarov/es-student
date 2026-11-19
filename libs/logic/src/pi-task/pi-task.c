@@ -1,5 +1,5 @@
 // pi-task.c
-#include "pi-task.h"
+#include "../include/pi-task/pi-task.h"
 #include <stddef.h>
 #include "systime/systime.h"
 
@@ -65,6 +65,19 @@ void pi_task_handle(void)
         pi_state = PI_STATE_READY;
     }
 }
+
+void pi_task_tick(void)
+{
+    // Если расчёт не запущен или уже готов — ничего не делаем
+    if (pi_state != PI_STATE_RUNNING)
+    {
+        return;
+    }
+
+    // Выполняем одну порцию вычислений (PI_TERMS_PER_CALL членов ряда)
+    pi_task_handle();
+}
+
 
 pi_state_t pi_task_get_state(void)
 {

@@ -23,3 +23,7 @@ pi_state_t pi_task_get_state(void);
 
 // значение и время расчёта; true только в состоянии «готово»
 bool pi_task_get_result(double *pi, uint32_t *time_ms);
+
+// Объявление функции-тика, которую вызывает main.c
+void pi_task_tick(void);
+

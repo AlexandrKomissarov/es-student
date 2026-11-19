@@ -1,0 +1,14 @@
+﻿231_firmware_template/
+├── CMakeLists.txt          ← тут говоришь CMake: «собери библиотеку platform из папки platform»
+├── main.c                  ← использует эту библиотеку
+├── platform/               ← папка
+│   ├── platform.h
+│   └── platform.c          ← здесь единственный раз в проекте подключаем pico/stdlib.h
+├── logic/                  ← папка для всей логики (api, led-task и т.д.)
+│   ├── api/
+│   ├── led-task/
+│   └── ...
+└── build/                  ← тут после cmake появится собранная библиотека platform.lib (или .a)
+
+ cmake -G "Unix Makefiles" ..
+ make

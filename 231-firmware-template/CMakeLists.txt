@@ -12,41 +12,52 @@ add_compile_options(-Wall)
 
 pico_sdk_init()
 
-# подключаем папку библиотек: внутри libs/CMakeLists.txt соберутся все пять
+# Подключаем libs: внутри них уже есть свои CMakeLists.txt,
+# которые создают библиотеки platform, logic, logging, profiling и т.д.
 add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
 
+# Включаем профилирование
+target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
+
+# Исполняемый файл: только main.c
 add_executable(${PROJECT_NAME}
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
+    main.c
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/api
-    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
-    ${CMAKE_CURRENT_SOURCE_DIR}/button-task
-    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
-)
-
+# Линкуем проект с библиотеками, которые уже собраны в libs
 target_link_libraries(${PROJECT_NAME}
     pico_stdlib
+    logic
+    platform
+    profiling
     logging
     device
     systime
-    profiling
     stdio_text_protocol
 )
 
-# профилирование включено по умолчанию в этой сборке;
-# PUBLIC — чтобы флаг видела и прошивка через #if !PROFILING_ENABLED
-target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
 
-# направить стандартный ввод-вывод в USB
+# Добавляем пути к заголовкам.
+# Оставляем только текущую папку проекта.
+# Все остальные пути уже добавлены через PUBLIC в библиотеках logic и platform.
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/libs/logic/include
+    ${CMAKE_SOURCE_DIR}/libs/logic/include/led-task
+    ${CMAKE_SOURCE_DIR}/libs/logic/include/pi-task
+    ${CMAKE_SOURCE_DIR}/libs/logic/include/button-task
+    ${CMAKE_SOURCE_DIR}/libs/device/include/device
+    ${CMAKE_SOURCE_DIR}/libs/logging/include/logging
+    ${CMAKE_SOURCE_DIR}/libs/platform/include/platform
+    ${CMAKE_SOURCE_DIR}/libs/profiling/include/profiling
+    ${CMAKE_SOURCE_DIR}/libs/stdio-text-protocol/include/stdio-text-protocol
+    ${CMAKE_SOURCE_DIR}/libs/systime/include/systime
+
+
+    # добавь сюда остальные подпапки, где лежат твои .h файлы
+)
+
+# Настройка вывода
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
-# UART как канал не используем
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
-
 pico_add_extra_outputs(${PROJECT_NAME})
