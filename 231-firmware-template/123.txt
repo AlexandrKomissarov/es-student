@@ -26,7 +26,3 @@ L-- logic/
 +-- CMakeLists.txt
 +-- include/<имя>/<заголовок>.h
 L-- src/<реализация>.c
-<имя>/
-+-- CMakeLists.txt
-+-- include/<имя>/<заголовок>.h
-L-- src/<реализация>.c
