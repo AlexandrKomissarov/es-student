@@ -1,0 +1,32 @@
+libs/                         в корне репозитория, общие для проектов курса
++-- CMakeLists.txt
++-- stdio-text-protocol/
++-- systime/
++-- profiling/
++-- device/
+L-- logging/
+231-firmware-template/
++-- CMakeLists.txt
++-- firmware.h
++-- main.c
++-- platform/
+¦   +-- platform.h
+¦   L-- platform.c
+L-- logic/
+    +-- api/
+    ¦   +-- api.h
+    ¦   +-- api.c
+    ¦   +-- api-commands.h
+    ¦   L-- api-callbacks.c
+    +-- led-task/
+    +-- button-task/
+    L-- pi-task/
+Каждая библиотека в libs/ устроена одинаково:
+<имя>/
++-- CMakeLists.txt
++-- include/<имя>/<заголовок>.h
+L-- src/<реализация>.c
+<имя>/
++-- CMakeLists.txt
++-- include/<имя>/<заголовок>.h
+L-- src/<реализация>.c
