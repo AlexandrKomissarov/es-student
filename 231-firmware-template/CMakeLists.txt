@@ -49,10 +49,24 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/logic
 )
 
+<<<<<<< HEAD
 # Включаем вывод (до линковки библиотек)
+=======
+target_link_libraries(${PROJECT_NAME}
+    pico_stdlib
+    logging
+    device
+    systime
+    profiling
+    stdio_text_protocol
+)
+
+# направить стандартный ввод-вывод в USB
+>>>>>>> ad4e4178087f61da03d6c13f5f64a96bf2cdbda8
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
+<<<<<<< HEAD
 # Подключаем все нужные библиотеки
 target_link_libraries(${PROJECT_NAME} PRIVATE
     logic
@@ -65,4 +79,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 # Эта команда подключит pico.ld и создаст .uf2
+=======
+>>>>>>> ad4e4178087f61da03d6c13f5f64a96bf2cdbda8
 pico_add_extra_outputs(${PROJECT_NAME})
