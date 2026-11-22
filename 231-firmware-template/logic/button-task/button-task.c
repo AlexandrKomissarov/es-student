@@ -1,10 +1,9 @@
-//// logic/button-task/button-task.c
+// logic/button-task/button-task.c
 #include "button-task/button-task.h"
-#include "led-task/led-task.h"
-#include "platform/platform.h"  // <-- вместо hardware/gpio
+#include "platform/platform.h"
 #include "systime/systime.h"
+#include <stddef.h>
 
-// время дребезга: 20 мс в микросекундах
 #define BUTTON_DEBOUNCE_US (20 * 1000)
 
 typedef enum
@@ -18,10 +17,12 @@ typedef enum
 static button_state_t button_state;
 static uint64_t button_edge_us;
 static uint32_t button_presses;
+static void (*g_on_press_cb)(void) = NULL;
 
-void button_task_init(void)
+// ОДНА функция init: принимает callback и делает всю инициализацию
+void button_task_init(void (*on_press)(void))
 {
-    // Инициализация GPIO теперь в platform_init()
+    g_on_press_cb = on_press;          // сохраняем callback
     button_state = BUTTON_STATE_RELEASED;
     button_edge_us = 0;
     button_presses = 0;
@@ -29,7 +30,7 @@ void button_task_init(void)
 
 void button_task_handle(void)
 {
-    bool pressed = platform_button_read(); // <-- читаем через platform
+    bool pressed = platform_button_read();
     uint64_t now_us = systime_us();
 
     switch (button_state)
@@ -51,7 +52,12 @@ void button_task_handle(void)
         {
             button_presses++;
             button_state = BUTTON_STATE_PRESSED;
-            led_task_next_state();  // связь с LED
+            
+            //  ПРАВИЛЬНО: вызываем callback, который передали из main
+            if (g_on_press_cb != NULL)
+            {
+                g_on_press_cb();
+            }
         }
         break;
 
@@ -86,3 +92,4 @@ uint32_t button_task_get_press_count(void)
 {
     return button_presses;
 }
+

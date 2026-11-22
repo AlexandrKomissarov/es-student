@@ -12,13 +12,23 @@ add_compile_options(-Wall)
 
 pico_sdk_init()
 
-# Общие библиотеки курса (вне папки проекта)
+# Общие библиотеки курса
 add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
 
-# ВАЖНО: включаем профилирование явно, как требует проверка
+# Включаем профилирование
 target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
 
-# logic — логика прибора
+# 1. Библиотека platform (отдельная!)
+add_library(platform STATIC
+    platform/platform.c
+)
+target_include_directories(platform PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+# ДОБАВЬ ЭТУ СТРОКУ (она разрешает #include <pico/stdlib.h>)
+target_link_libraries(platform PRIVATE pico_stdlib)
+
+# 2. Библиотека logic (БЕЗ platform.c!)
 add_library(logic STATIC
     logic/api/api.c
     logic/api/api-callbacks.c
@@ -41,31 +51,33 @@ target_link_libraries(logic PRIVATE
     device
 )
 
-# Исполняемый файл: platform.c добавлен прямо сюда, без отдельной библиотеки
-add_executable(${PROJECT_NAME}
+# 3. ЕДИНСТВЕННАЯ цель прошивки
+# Если переменная FIRMWARE_NAME не определена, зададим её явно
+if(NOT DEFINED FIRMWARE_NAME)
+    set(FIRMWARE_NAME 231_firmware_template)
+endif()
+
+add_executable(${FIRMWARE_NAME}
     main.c
-    platform/platform.c
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/logic
-)
-
-# Включаем вывод (до линковки библиотек)
-pico_enable_stdio_usb(${PROJECT_NAME} 1)
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
-
-# Подключаем все нужные библиотеки
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${FIRMWARE_NAME} PRIVATE
     logic
-    logging
+    platform
     stdio_text_protocol
     systime
     profiling
     device
+    logging
     pico_stdlib
 )
 
-# Эта команда подключит pico.ld и создаст .uf2
-pico_add_extra_outputs(${PROJECT_NAME})
+target_include_directories(${FIRMWARE_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/logic
+)
+
+# Вывод и .uf2
+pico_enable_stdio_usb(${FIRMWARE_NAME} 1)
+pico_enable_stdio_uart(${FIRMWARE_NAME} 0)
+pico_add_extra_outputs(${FIRMWARE_NAME})

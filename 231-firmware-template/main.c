@@ -40,7 +40,7 @@ int main(void)
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
 
     led_task_init();
-    button_task_init();
+    button_task_init(led_task_next_state);
     stdio_text_protocol_init();
 
     while (1)

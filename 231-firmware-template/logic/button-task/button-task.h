@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 // задача кнопки без ожидания: машина состояний подавляет дребезг
-void button_task_init(void);
+void button_task_init(void (*on_press)(void));
 void button_task_handle(void);
 
 // кнопку считают нажатой и в «нажата», и в «отпускание»:
