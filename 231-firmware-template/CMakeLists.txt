@@ -12,41 +12,57 @@ add_compile_options(-Wall)
 
 pico_sdk_init()
 
-# подключаем папку библиотек: внутри libs/CMakeLists.txt соберутся все пять
+# Общие библиотеки курса (вне папки проекта)
 add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
 
+# logic — логика прибора (оставляем как библиотеку)
+add_library(logic STATIC
+    logic/api/api.c
+    logic/api/api-callbacks.c
+    logic/led-task/led-task.c
+    logic/button-task/button-task.c
+    logic/pi-task/pi-task.c
+)
+
+target_include_directories(logic PUBLIC
+    ${CMAKE_SOURCE_DIR}/logic
+    ${CMAKE_SOURCE_DIR}
+)
+
+target_link_libraries(logic PUBLIC stdio_text_protocol)
+
+target_link_libraries(logic PRIVATE
+    systime
+    profiling
+    logging
+    device
+)
+
+# ВАЖНО: platform.c добавлен прямо в исполняемый файл, без отдельной библиотеки
 add_executable(${PROJECT_NAME}
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
+    main.c
+    platform/platform.c
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/api
-    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
-    ${CMAKE_CURRENT_SOURCE_DIR}/button-task
-    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/logic
 )
 
-target_link_libraries(${PROJECT_NAME}
-    pico_stdlib
-    logging
-    device
-    systime
-    profiling
-    stdio_text_protocol
-)
-
-# профилирование включено по умолчанию в этой сборке;
-# PUBLIC — чтобы флаг видела и прошивка через #if !PROFILING_ENABLED
-target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
-
-# направить стандартный ввод-вывод в USB
+# Включаем вывод (до линковки библиотек)
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
-# UART как канал не используем
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
+# Подключаем все нужные библиотеки
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    logic
+    logging
+    stdio_text_protocol
+    systime
+    profiling
+    device
+    pico_stdlib          # <-- критично: SDK теперь здесь
+)
+
+# Эта команда подключит pico.ld и создаст .uf2
 pico_add_extra_outputs(${PROJECT_NAME})

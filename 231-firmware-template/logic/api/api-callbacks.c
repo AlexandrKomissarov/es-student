@@ -1,18 +1,15 @@
-// api.c
-#include "api.h"
+// logic/api/api-callbacks.c
+#include "api/api-commands.h"
 #include "firmware.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <stddef.h>
 #include "device/device.h"
 #include "profiling/profiling.h"
-#include "led-task.h"
-#include "button-task.h"
-#include "pi-task.h"
+#include "led-task/led-task.h"
+#include "button-task/button-task.h"
+#include "pi-task/pi-task.h"
 #include "systime/systime.h"
-#include "stdio-text-protocol/stdio-text-protocol.h"
 
 static bool parse_u32(const char *text, uint32_t *number)
 {
@@ -102,7 +99,6 @@ static void cmd_info(const command_t *command)
 {
     (void)command;
 
-    // паспорт печатает api: константы прошивки из firmware.h, плата из device
     device_info_t info;
     device_get_info(&info);
 
@@ -123,19 +119,12 @@ static void cmd_uptime(const command_t *command)
 {
     (void)command;
 
-    // печатаем время с момента запуска прибора в миллисекундах
     printf("uptime: %llu ms\n", (unsigned long long)(systime_us() / 1000));
 }
 
-// печатаем все заведённые секундомеры
 static void cmd_profiling(const command_t *command)
 {
     (void)command;
-
-#if !PROFILING_ENABLED
-    printf("profiling is disabled in this build\n");
-    return;
-#endif
 
     profiling_result_t result;
 
@@ -157,15 +146,6 @@ static void cmd_profiling_reset(const command_t *command)
     profiling_reset();
     printf("profiling reset\n");
 }
-
-typedef void (*api_callback_t)(const command_t *command);
-
-typedef struct
-{
-    const char *name;
-    const char *help;
-    api_callback_t callback;
-} api_command_t;
 
 // единый ответ всех команд светодиода
 static void print_led_state(void)
@@ -239,9 +219,9 @@ static void cmd_button(const command_t *command)
            (unsigned)button_task_get_press_count());
 }
 
-// таблица команд со справкой на английском; help в таблице нет —
-// api_handle() печатает справку прямо из таблицы
-static const api_command_t commands[] = {
+// таблица команд прибора; help в таблице нет —
+// api_handle() печатает справку прямо из этой таблицы
+const api_command_t api_commands[] = {
     { "info", "device passport", cmd_info },
     { "uptime", "time since reset", cmd_uptime },
     { "led_enable", "led on", cmd_led_enable },
@@ -255,43 +235,4 @@ static const api_command_t commands[] = {
     { "profiling_reset", "reset stopwatch results", cmd_profiling_reset },
 };
 
-static const uint32_t api_command_count = sizeof(commands) / sizeof(commands[0]);
-
-static void api_help(void)
-{
-    // строка о себе и справка всех команд таблицы
-    printf("%-17s%s\n", "help", "list of commands");
-
-    for (uint32_t i = 0; i < api_command_count; i++)
-    {
-        printf("%-17s%s\n", commands[i].name, commands[i].help);
-    }
-}
-
-void api_handle(const command_t *command)
-{
-    // команду с пометкой truncated не выполняем
-    if (command->truncated)
-    {
-        printf("error: command longer than 63 characters or 4 arguments\n");
-        return;
-    }
-
-    // help выполняется сама, справку берёт из таблицы
-    if (strcmp(command->name, "help") == 0)
-    {
-        api_help();
-        return;
-    }
-
-    for (uint32_t i = 0; i < api_command_count; i++)
-    {
-        if (strcmp(command->name, commands[i].name) == 0)
-        {
-            commands[i].callback(command);
-            return;
-        }
-    }
-
-    printf("error: unknown command '%s', try help\n", command->name);
-}
+const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);

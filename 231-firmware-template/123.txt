@@ -1,28 +1,13 @@
-libs/                         в корне репозитория, общие для проектов курса
-+-- CMakeLists.txt
-+-- stdio-text-protocol/
-+-- systime/
-+-- profiling/
-+-- device/
-L-- logging/
-231-firmware-template/
-+-- CMakeLists.txt
-+-- firmware.h
-+-- main.c
-+-- platform/
-¦   +-- platform.h
-¦   L-- platform.c
-L-- logic/
-    +-- api/
-    ¦   +-- api.h
-    ¦   +-- api.c
-    ¦   +-- api-commands.h
-    ¦   L-- api-callbacks.c
-    +-- led-task/
-    +-- button-task/
-    L-- pi-task/
-Каждая библиотека в libs/ устроена одинаково:
-<имя>/
-+-- CMakeLists.txt
-+-- include/<имя>/<заголовок>.h
-L-- src/<реализация>.c
+fghdfhdf
+
+cmake -G "Unix Makefiles" ..
+make
+
+
+[100%] Linking CXX executable 231_firmware_template.elf
+C:/SysGCC/arm-eabi/bin/../lib/gcc/arm-none-eabi/15.2.1/../../../../arm-none-eabi/bin/ld.exe: cannot open linker script file C:/Repositories/pico/pico-sdk/src/rp2_common/pico_standard_binary/pico.ld: Invalid argument
+collect2.exe: error: ld returned 1 exit status
+make[2]: *** [231_firmware_template.elf] -- 1
+make[1]: *** [CMakeFiles/231_firmware_template.dir/all] -- 2
+make: *** [all] -- 2
+[100%] Built target 231_firmware_template

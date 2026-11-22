@@ -1,22 +1,18 @@
-// button-task.c
-#include "button-task.h"
-#include "led-task.h"
-#include "hardware/gpio.h"
+//// logic/button-task/button-task.c
+#include "button-task/button-task.h"
+#include "led-task/led-task.h"
+#include "platform/platform.h"  // <-- вместо hardware/gpio
 #include "systime/systime.h"
-
-// кнопка подключена между GP15 и землёй (п1.2.2)
-#define BUTTON_PIN 15u
 
 // время дребезга: 20 мс в микросекундах
 #define BUTTON_DEBOUNCE_US (20 * 1000)
 
-// машина состояний кнопки
 typedef enum
 {
-    BUTTON_STATE_RELEASED,  // отпущена
-    BUTTON_STATE_PRESSING,  // кандидат на нажатие, ждём 20 мс
-    BUTTON_STATE_PRESSED,   // нажата
-    BUTTON_STATE_RELEASING, // кандидат на отпускание, ждём 20 мс
+    BUTTON_STATE_RELEASED,
+    BUTTON_STATE_PRESSING,
+    BUTTON_STATE_PRESSED,
+    BUTTON_STATE_RELEASING,
 } button_state_t;
 
 static button_state_t button_state;
@@ -25,10 +21,7 @@ static uint32_t button_presses;
 
 void button_task_init(void)
 {
-    gpio_init(BUTTON_PIN);
-    gpio_set_dir(BUTTON_PIN, GPIO_IN);
-    gpio_pull_up(BUTTON_PIN);
-
+    // Инициализация GPIO теперь в platform_init()
     button_state = BUTTON_STATE_RELEASED;
     button_edge_us = 0;
     button_presses = 0;
@@ -36,8 +29,7 @@ void button_task_init(void)
 
 void button_task_handle(void)
 {
-    // нажатая кнопка замыкает вывод на землю и даёт ноль
-    bool pressed = !gpio_get(BUTTON_PIN);
+    bool pressed = platform_button_read(); // <-- читаем через platform
     uint64_t now_us = systime_us();
 
     switch (button_state)
@@ -53,15 +45,13 @@ void button_task_handle(void)
     case BUTTON_STATE_PRESSING:
         if (!pressed)
         {
-            // уровень не продержался — дребезг или помеха
             button_state = BUTTON_STATE_RELEASED;
         }
         else if (now_us - button_edge_us >= BUTTON_DEBOUNCE_US)
         {
-            // нажатие подтверждено: засчитываем и переключаем светодиод
             button_presses++;
             button_state = BUTTON_STATE_PRESSED;
-            led_task_next_state();
+            led_task_next_state();  // связь с LED
         }
         break;
 
@@ -76,7 +66,6 @@ void button_task_handle(void)
     case BUTTON_STATE_RELEASING:
         if (pressed)
         {
-            // снова замкнулась — отпускание не подтвердилось
             button_state = BUTTON_STATE_PRESSED;
         }
         else if (now_us - button_edge_us >= BUTTON_DEBOUNCE_US)
