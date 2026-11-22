@@ -1,11 +1,11 @@
 // main.c
-#include "platform/platform.h"          // <-- вместо pico/stdlib
+#include "platform/platform.h"
 #include "firmware.h"
 #include "logging/log.h"
 #include "device/device.h"
 #include "profiling/profiling.h"
 #include "stdio-text-protocol/stdio-text-protocol.h"
-#include "logic/api/api.h"             // <-- путь по структуре папок
+#include "logic/api/api.h"
 #include "logic/led-task/led-task.h"
 #include "logic/button-task/button-task.h"
 #include "logic/pi-task/pi-task.h"
@@ -19,11 +19,19 @@ typedef enum
     STOPWATCH_PI,
 } stopwatch_t;
 
-int main()
+int main(void)
 {
-    platform_init();                    // <-- инициализирует GPIO и stdio
+    // Сначала платформа (GPIO, таймеры, иногда и stdio)
+    platform_init();
 
-    LOG_INF("%s %s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
+    // Теперь можно безопасно использовать printf / stdio
+#ifdef PROFILING_ENABLED
+    printf("profiling is enabled\r\n");
+#else
+    printf("profiling is disabled in this build\r\n");
+#endif
+
+    LOG_INF("%s %s\r\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
     profiling_stopwatch_init(STOPWATCH_LOOP, "loop");
     profiling_stopwatch_init(STOPWATCH_COMMAND, "command");
@@ -32,7 +40,7 @@ int main()
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
 
     led_task_init();
-    button_task_init();                  // без аргументов, колбэк передаётся через led_task_next_state
+    button_task_init();
     stdio_text_protocol_init();
 
     while (1)
