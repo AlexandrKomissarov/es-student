@@ -6,6 +6,12 @@
 
 void api_handle(const command_t *command)
 {
+    // 1. Сначала проверяем, была ли команда обрезана (truncated)
+    if (command->truncated) {
+        printf("error: command too long\r\n");
+        return;
+    }   
+     
     if (command == NULL)
     {
         return;
@@ -14,11 +20,11 @@ void api_handle(const command_t *command)
     // Обработка команды help — это часть механизма, а не отдельная команда в таблице
     if (strcmp(command->name, "help") == 0)
     {
-        printf("%-17s%s\n", "help", "list of commands");
+        printf("%-17s%s\r\n", "help", "list of commands");
 
         for (uint32_t i = 0; i < api_command_count; i++)
         {
-            printf("%-17s%s\n", api_commands[i].name, api_commands[i].help);
+            printf("%-17s%s\r\n", api_commands[i].name, api_commands[i].help);
         }
         return;
     }
@@ -33,5 +39,5 @@ void api_handle(const command_t *command)
         }
     }
 
-    printf("error: unknown command '%s', try help\n", command->name);
+    printf("error: unknown command '%s', try help\r\n", command->name);
 }
