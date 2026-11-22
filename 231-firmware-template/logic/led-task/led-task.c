@@ -61,7 +61,7 @@ void led_task_handle(void)
 
     case LED_STATE_BLINK:
         // период — полный цикл мигания, переключаемся каждые полпериода
-        if (period_elapsed(&last_us, (uint64_t)led_period_ms * 1000 / 2))
+        if (systime_period_elapsed(&last_us, (uint64_t)led_period_ms * 1000 / 2))
         {
             toggle();
         }
