@@ -52,16 +52,22 @@ void led_task_set_state(led_state_t state)
 
 void led_task_handle(void)
 {
-    if (led_state != LED_STATE_BLINK)
-        return;
-
-    // Переключаем каждые полпериода
-    if (systime_period_elapsed(&last_us, (uint64_t)led_period_ms * 1000 / 2))
+    switch (led_state)
     {
-        toggle();
+    case LED_STATE_OFF:
+    case LED_STATE_ON:
+        // светодиод уже установлен при входе, делать нечего
+        break;
+
+    case LED_STATE_BLINK:
+        // период — полный цикл мигания, переключаемся каждые полпериода
+        if (period_elapsed(&last_us, (uint64_t)led_period_ms * 1000 / 2))
+        {
+            toggle();
+        }
+        break;
     }
 }
-
 bool led_task_set_period_ms(uint32_t period_ms)
 {
     if (period_ms == 0)
