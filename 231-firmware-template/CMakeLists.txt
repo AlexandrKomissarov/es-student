@@ -16,7 +16,7 @@ pico_sdk_init()
 add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
 
 # Включаем профилирование
-target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
+# target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
 
 # 1. Библиотека platform (отдельная!)
 add_library(platform STATIC
