@@ -17,7 +17,7 @@
 #include "../led-task/led-task.h"
 #include "../button-task/button-task.h"
 #include "../pi-task/pi-task.h"
-
+#include "../api/api-commands.h"
 #include "../../stdio-text-protocol/include/stdio-text-protocol/stdio-text-protocol.h"
 
 static bool parse_u32(const char *text, uint32_t *number)
@@ -135,6 +135,7 @@ static void cmd_profiling(const command_t *command)
 {
     (void)command;
 
+#if PROFILING_ENABLED
     profiling_result_t result;
 
     for (uint32_t id = 0; id < PROFILING_STOPWATCH_COUNT; id++)
@@ -146,7 +147,11 @@ static void cmd_profiling(const command_t *command)
                    result.mean_us, (unsigned)result.max_us);
         }
     }
+#else
+    printf("profiling is disabled in this build\n");
+#endif
 }
+
 
 static void cmd_profiling_reset(const command_t *command)
 {
@@ -245,4 +250,4 @@ const api_command_t api_commands[] = {
 };
 
 // Счётчик команд
-const size_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
+const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);

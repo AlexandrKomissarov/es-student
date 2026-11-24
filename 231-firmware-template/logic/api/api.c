@@ -34,7 +34,7 @@ void api_handle(const command_t *command)
     {
         if (strcmp(command->name, api_commands[i].name) == 0)
         {
-            api_commands[i].handler(command);
+            api_commands[i].callback(command);
             return;
         }
     }
