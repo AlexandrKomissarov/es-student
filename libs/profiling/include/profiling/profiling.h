@@ -1,5 +1,5 @@
 // profiling/include/profiling/profiling.h
-#pragma onceg
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
