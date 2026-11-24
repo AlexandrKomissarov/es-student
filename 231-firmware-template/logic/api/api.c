@@ -1,6 +1,6 @@
 // logic/api/api.c
-#include "api/api.h"
-#include "api/api-commands.h"  // Здесь объявлены api_commands[] и api_command_count
+#include "api.h"          // <-- правильно: файл в той же папке
+#include "api-commands.h" // <-- правильно
 #include <stdio.h>
 #include <string.h>
 
@@ -34,7 +34,7 @@ void api_handle(const command_t *command)
     {
         if (strcmp(command->name, api_commands[i].name) == 0)
         {
-            api_commands[i].callback(command);
+            api_commands[i].handler(command);
             return;
         }
     }

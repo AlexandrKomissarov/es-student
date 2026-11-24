@@ -1,15 +1,24 @@
 // logic/api/api-callbacks.c
-#include "api/api-commands.h"
-#include "firmware.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "device/device.h"
-#include "profiling/profiling.h"
-#include "led-task/led-task.h"
-#include "button-task/button-task.h"
-#include "pi-task/pi-task.h"
-#include "systime/systime.h"
+#include <stdbool.h>
+#include <stdint.h>
+
+#include "api.h"
+
+#include "../../firmware.h"
+
+#include "../../libs/device/include/device/device.h"
+#include "../../libs/profiling/include/profiling/profiling.h"
+#include "../../libs/systime/include/systime/systime.h"
+#include "../../libs/logging/include/logging/log.h"
+
+#include "../led-task/led-task.h"
+#include "../button-task/button-task.h"
+#include "../pi-task/pi-task.h"
+
+#include "../../stdio-text-protocol/include/stdio-text-protocol/stdio-text-protocol.h"
 
 static bool parse_u32(const char *text, uint32_t *number)
 {
@@ -235,4 +244,5 @@ const api_command_t api_commands[] = {
     { "profiling_reset", "reset stopwatch results", cmd_profiling_reset },
 };
 
-const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
+// Счётчик команд
+const size_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);

@@ -1,4 +1,4 @@
-// device.h
+// libs/device/include/device.hdevice.h
 #pragma once
 
 #include <stdint.h>
