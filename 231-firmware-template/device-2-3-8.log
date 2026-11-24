@@ -3,135 +3,135 @@
 устройство: 2e8a:000a
 серийный номер: 5303284730E8AA1C
 порт: COM4
-начало: 2026-11-24T19:09:25
+начало: 2026-11-24T20:04:08
    0.001 --> 
-   0.503 --> help
-   0.507 <-- help
-   0.507 <-- help             list of commands
-   0.507 <-- info             device passport
-   0.507 <-- uptime           time since reset
-   0.507 <-- led_enable       led on
-   0.507 <-- led_disable      led off
-   0.507 <-- led_blink        blink the led
-   0.507 <-- led_period       set blink period: led_period <period_ms>
-   0.558 <-- button           button state and presses
-   0.558 <-- pi_start         start pi calculation: pi_start [terms]
-   0.558 <-- pi               pi result or state
-   0.558 <-- profiling        stopwatch results
-   0.558 <-- profiling_reset  reset stopwatch results
-   1.512 --> info
-   1.563 <-- info
-   1.563 <-- name: es-led-module
-   1.563 <-- version: 1.1.0
-   1.563 <-- project: 231-firmware-template
-   1.563 <-- repo: https://github.com/AlexandrKomissarov/es-student
-   1.563 <-- board: pico
-   1.563 <-- serial: 5303284730E8AA1C
-   1.563 <-- chip: manufacturer 0x927, part 0x0002, revision 2
-   1.563 <-- pico-sdk: 2.3.0
-   2.514 --> uptime
-   2.564 <-- uptime
-   2.564 <-- uptime: 40921 ms
-   3.515 -->    uptime    
-   3.564 <-- uptime
-   3.564 <-- uptime: 41923 ms
-   4.518 --> upx<BS>time
-   4.569 <-- upx<BS> <BS>time
-   4.569 <-- uptime: 42925 ms
-   5.524 --> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-   5.573 <-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-   5.573 <-- error: command too long
-   6.574 --> led_period 1 2 3 4 5
-   6.623 <-- led_period 1 2 3 4 5
-   6.623 <-- error: command too long
-   7.625 --> blink
-   7.675 <-- blink
-   7.675 <-- error: unknown command 'blink', try help
-   8.628 --> led_enable
-   8.678 <-- led_enable
-   8.678 <-- led: on, period 1000 ms
-   9.632 --> led_disable
-   9.682 <-- led_disable
-   9.682 <-- led: off, period 1000 ms
-  10.635 --> led_period 2000
-  10.686 <-- led_period 2000
-  10.686 <-- led: off, period 2000 ms
-  11.637 --> led_blink
-  11.688 <-- led_blink
-  11.688 <-- led: blink, period 2000 ms
-  12.640 --> led_period
-  12.691 <-- led_period
-  12.691 <-- error: usage led_period <period_ms>
-  13.644 --> led_period 5x
-  13.694 <-- led_period 5x
-  13.694 <-- error: period_ms must be greater than 0
-  14.654 --> led_period -1
-  14.704 <-- led_period -1
-  14.704 <-- error: period_ms must be greater than 0
-  15.656 --> led_period 4294967296
-  15.706 <-- led_period 4294967296
-  15.706 <-- error: period_ms must be greater than 0
-  16.658 --> led_period 0
-  16.708 <-- led_period 0
-  16.708 <-- error: period_ms must be greater than 0
-  17.662 --> led_period 1000
-  17.713 <-- led_period 1000
-  17.713 <-- led: blink, period 1000 ms
-  18.665 --> button
-  18.716 <-- button
-  18.716 <-- button: released, presses 0
-  19.668 --> pi
-  19.718 <-- pi
-  19.718 <-- pi: not started
-  20.669 --> pi_start 0
-  20.720 <-- pi_start 0
-  20.720 <-- error: terms must be greater than 0
-  21.671 --> pi_start 5x
-  21.720 <-- pi_start 5x
-  21.720 <-- error: usage pi_start [terms]
-  22.721 --> pi_start 10 20
-  22.770 <-- pi_start 10 20
-  22.770 <-- error: usage pi_start [terms]
-  23.723 --> profiling_reset
-  23.772 <-- profiling_reset
-  23.772 <-- profiling reset
-  24.725 --> pi_start
-  24.775 <-- pi_start
-  24.775 <-- pi: started, 1000000 terms
-  25.227 --> pi
-  25.277 <-- pi
-  25.277 <-- pi: running
-  25.730 --> pi_start 1000
-  25.780 <-- pi_start 1000
-  25.780 <-- error: pi is busy
-  26.232 --> uptime
-  26.282 <-- uptime
-  26.282 <-- uptime: 64644 ms
-  26.734 --> p
-  32.761 --> i
-  32.811 <-- pi
-  32.811 <-- pi: 3.141591654 in 4787 ms
-  33.812 --> profiling
-  33.816 <-- profiling
-  33.816 <-- loop       count 543463     mean 17.88 us  max 585 us
-  33.816 <-- command    count 543463     mean 2.69 us  max 225 us
-  33.816 <-- led        count 543463     mean 1.47 us  max 17 us
-  33.816 <-- button     count 543463     mean 1.07 us  max 17 us
-  33.866 <-- pi         count 543463     mean 9.49 us  max 505 us
-  34.818 --> pi_start 100000
-  34.868 <-- pi_start 100000
-  34.868 <-- pi: started, 100000 terms
-  35.820 --> pi
-  35.871 <-- pi
-  35.871 <-- pi: 3.141582654 in 477 ms
-  36.857 --> profiling_reset
-  36.907 <-- profiling_reset
-  36.907 <-- profiling reset
-  37.859 --> profiling
-  37.863 <-- profiling
-  37.863 <-- loop       count 100805     mean 9.26 us  max 73 us
-  37.863 <-- command    count 100805     mean 2.69 us  max 66 us
-  37.863 <-- led        count 100805     mean 1.47 us  max 7 us
-  37.863 <-- button     count 100805     mean 1.07 us  max 2 us
-  37.913 <-- pi         count 100805     mean 0.86 us  max 2 us
+   0.504 --> help
+   0.528 <-- help
+   0.528 <-- help             list of commands
+   0.528 <-- info             device passport
+   0.528 <-- uptime           time since reset
+   0.528 <-- led_enable       led on
+   0.528 <-- led_disable      led off
+   0.528 <-- led_blink        blink the led
+   0.528 <-- led_period       set blink period: led_period <period_ms>
+   0.579 <-- button           button state and presses
+   0.579 <-- pi_start         start pi calculation: pi_start [terms]
+   0.579 <-- pi               pi result or state
+   0.579 <-- profiling        stopwatch results
+   0.579 <-- profiling_reset  reset stopwatch results
+   1.532 --> info
+   1.582 <-- info
+   1.582 <-- name: es-led-module
+   1.582 <-- version: 1.1.0
+   1.582 <-- project: 231-firmware-template
+   1.582 <-- repo: https://github.com/AlexandrKomissarov/es-student
+   1.582 <-- board: pico
+   1.582 <-- serial: 5303284730E8AA1C
+   1.582 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.582 <-- pico-sdk: 2.3.0
+   2.534 --> uptime
+   2.584 <-- uptime
+   2.584 <-- uptime: 38551 ms
+   3.537 -->    uptime    
+   3.588 <-- uptime
+   3.588 <-- uptime: 39555 ms
+   4.542 --> upx<BS>time
+   4.591 <-- upx<BS> <BS>time
+   4.591 <-- uptime: 40559 ms
+   5.546 --> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   5.595 <-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   5.595 <-- error: command too long
+   6.547 --> led_period 1 2 3 4 5
+   6.596 <-- led_period 1 2 3 4 5
+   6.596 <-- error: command too long
+   7.549 --> blink
+   7.599 <-- blink
+   7.599 <-- error: unknown command 'blink', try help
+   8.551 --> led_enable
+   8.601 <-- led_enable
+   8.601 <-- led: on, period 1000 ms
+   9.554 --> led_disable
+   9.604 <-- led_disable
+   9.604 <-- led: off, period 1000 ms
+  10.557 --> led_period 2000
+  10.608 <-- led_period 2000
+  10.608 <-- led: off, period 2000 ms
+  11.560 --> led_blink
+  11.611 <-- led_blink
+  11.611 <-- led: blink, period 2000 ms
+  12.563 --> led_period
+  12.614 <-- led_period
+  12.614 <-- error: usage led_period <period_ms>
+  13.567 --> led_period 5x
+  13.618 <-- led_period 5x
+  13.618 <-- error: period_ms must be greater than 0
+  14.571 --> led_period -1
+  14.622 <-- led_period -1
+  14.622 <-- error: period_ms must be greater than 0
+  15.584 --> led_period 4294967296
+  15.634 <-- led_period 4294967296
+  15.634 <-- error: period_ms must be greater than 0
+  16.586 --> led_period 0
+  16.636 <-- led_period 0
+  16.636 <-- error: period_ms must be greater than 0
+  17.588 --> led_period 1000
+  17.639 <-- led_period 1000
+  17.639 <-- led: blink, period 1000 ms
+  18.593 --> button
+  18.644 <-- button
+  18.644 <-- button: released, presses 0
+  19.595 --> pi
+  19.646 <-- pi
+  19.646 <-- pi: not started
+  20.598 --> pi_start 0
+  20.648 <-- pi_start 0
+  20.648 <-- error: terms must be greater than 0
+  21.599 --> pi_start 5x
+  21.648 <-- pi_start 5x
+  21.648 <-- error: usage pi_start [terms]
+  22.649 --> pi_start 10 20
+  22.698 <-- pi_start 10 20
+  22.698 <-- error: usage pi_start [terms]
+  23.650 --> profiling_reset
+  23.700 <-- profiling_reset
+  23.700 <-- profiling reset
+  24.655 --> pi_start
+  24.705 <-- pi_start
+  24.705 <-- pi: started, 1000000 terms
+  25.158 --> pi
+  25.208 <-- pi
+  25.208 <-- pi: running
+  25.661 --> pi_start 1000
+  25.711 <-- pi_start 1000
+  25.711 <-- error: pi is busy
+  26.164 --> uptime
+  26.214 <-- uptime
+  26.214 <-- uptime: 62185 ms
+  26.667 --> p
+  32.693 --> i
+  32.743 <-- pi
+  32.743 <-- pi: 3.141591654 in 4787 ms
+  33.698 --> profiling
+  33.702 <-- profiling
+  33.702 <-- loop       count 539330     mean 17.95 us  max 581 us
+  33.702 <-- command    count 539330     mean 2.69 us  max 242 us
+  33.702 <-- led        count 539330     mean 1.47 us  max 20 us
+  33.702 <-- button     count 539330     mean 1.07 us  max 18 us
+  33.752 <-- pi         count 539330     mean 9.55 us  max 503 us
+  34.703 --> pi_start 100000
+  34.753 <-- pi_start 100000
+  34.753 <-- pi: started, 100000 terms
+  35.706 --> pi
+  35.756 <-- pi
+  35.756 <-- pi: 3.141582654 in 477 ms
+  36.709 --> profiling_reset
+  36.760 <-- profiling_reset
+  36.760 <-- profiling reset
+  37.714 --> profiling
+  37.718 <-- profiling
+  37.718 <-- loop       count 101110     mean 9.26 us  max 74 us
+  37.718 <-- command    count 101110     mean 2.69 us  max 67 us
+  37.718 <-- led        count 101110     mean 1.47 us  max 16 us
+  37.718 <-- button     count 101110     mean 1.07 us  max 2 us
+  37.768 <-- pi         count 101110     mean 0.86 us  max 6 us
 итог: отправлено кадров 36, принято строк 94
