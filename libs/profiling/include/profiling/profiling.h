@@ -1,5 +1,5 @@
-// profiling.h
-#pragma once
+// profiling/include/profiling/profiling.h
+#pragma onceg
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -36,7 +36,7 @@ void profiling_reset(void);
 void profiling_start(uint32_t id);
 void profiling_stop(uint32_t id);
 #else
-// профилирование выключено: вызовы ничего не делают
-#define profiling_start(id) ((void)0)
-#define profiling_stop(id) ((void)0)
+// профилирование выключено: макросы пустые, вызовы полностью удаляются компилятором
+#define profiling_start(id)
+#define profiling_stop(id)
 #endif
