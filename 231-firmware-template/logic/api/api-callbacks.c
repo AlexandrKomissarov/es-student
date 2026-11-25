@@ -209,21 +209,22 @@ static void cmd_led_blink(const command_t *command)
 
 static void cmd_led_period(const command_t *command)
 {
-    // Должен быть ровно 1 аргумент
+    // Если нет аргумента — это неверный формат, а не «подсказка».
+    // Для Б.1 нужно строго error: usage
     if (command->argc != 1) {
-        printf("error: usage led_period <period_ms>\r\n");
+        printf("error: usage\r\n");
         return;
     }
 
     const char *arg = command->argv[0];
 
-    // Пустая строка — ошибка
+    // Пустая строка — тоже неверный формат
     if (!arg || !*arg) {
         printf("error: usage\r\n");
         return;
     }
 
-    // Первый символ должен быть цифрой. Это сразу отсекает "-5", "+10", "0x10"
+    // Первый символ должен быть цифрой. Это отсекает: -5, +10, 0x10, x5
     if (!isdigit((unsigned char)arg[0])) {
         printf("error: usage\r\n");
         return;
@@ -233,16 +234,13 @@ static void cmd_led_period(const command_t *command)
     const char *p = arg;
 
     while (*p != '\0') {
-        // Если встретили не цифру (например, 'x' в "5x") — ошибка
+        // Если встретили не цифру (например, 'x' в "5x") — сразу error: usage
         if (!isdigit((unsigned char)*p)) {
             printf("error: usage\r\n");
             return;
         }
 
-        // Проверка на переполнение ПЕРЕД умножением
-        // Максимальное значение uint32_t = 4294967295
-        // Если value > 429496729, то value*10 точно переполнится
-        // Если value == 429496729 и следующая цифра > 5, то тоже переполнится
+        // Проверка на переполнение uint32_t (макс 4294967295)
         if (value > 429496729 || (value == 429496729 && (*p - '0') > 5)) {
             printf("error: usage\r\n");
             return;
@@ -252,7 +250,7 @@ static void cmd_led_period(const command_t *command)
         p++;
     }
 
-    // Период должен быть больше 0
+    // Отдельная проверка на ноль
     if (value == 0) {
         printf("error: period_ms must be greater than 0\r\n");
         return;
@@ -266,7 +264,6 @@ static void cmd_led_period(const command_t *command)
 
     print_led_state();
 }
-
 
 
 static void cmd_button(const command_t *command)
