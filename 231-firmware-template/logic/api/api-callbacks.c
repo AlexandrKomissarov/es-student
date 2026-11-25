@@ -209,16 +209,22 @@ static void cmd_led_blink(const command_t *command)
 
 static void cmd_led_period(const command_t *command)
 {
-    // Если нет аргумента — это неверный формат, а не «подсказка».
-    // Для Б.1 нужно строго error: usage
-    if (command->argc != 1) {
+    // Случай 1: нет аргумента вообще — это тот самый тест, который у тебя уже был сдан
+    if (command->argc == 0) {
+        printf("error: usage led_period <period_ms>\r\n");
+        return;
+    }
+
+    // Если аргументов больше 1 (например, "led_period 1 2") — это тоже неверный формат.
+    // Для Б.1 тут нужен строгий error: usage
+    if (command->argc > 1) {
         printf("error: usage\r\n");
         return;
     }
 
     const char *arg = command->argv[0];
 
-    // Пустая строка — тоже неверный формат
+    // Пустая строка — тоже плохой формат
     if (!arg || !*arg) {
         printf("error: usage\r\n");
         return;
@@ -264,6 +270,7 @@ static void cmd_led_period(const command_t *command)
 
     print_led_state();
 }
+
 
 
 static void cmd_button(const command_t *command)
