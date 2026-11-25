@@ -209,62 +209,19 @@ static void cmd_led_blink(const command_t *command)
 
 static void cmd_led_period(const command_t *command)
 {
-    // Случай 1: нет аргумента вообще — это тот самый тест, который у тебя уже был сдан
-    if (command->argc == 0) {
-        printf("error: usage led_period <period_ms>\r\n");
+    uint32_t period_ms;
+
+    // неверно задан аргумент (нет, лишние, не цифры, переполнение) — отказ с подсказкой
+    if (command->argc != 1 || !parse_u32(command->argv[0], &period_ms))
+    {
+        printf("error: usage led_period <period_ms>\n");
         return;
     }
 
-    // Если аргументов больше 1 (например, "led_period 1 2") — это тоже неверный формат.
-    // Для Б.1 тут нужен строгий error: usage
-    if (command->argc > 1) {
-        printf("error: usage\r\n");
-        return;
-    }
-
-    const char *arg = command->argv[0];
-
-    // Пустая строка — тоже плохой формат
-    if (!arg || !*arg) {
-        printf("error: usage\r\n");
-        return;
-    }
-
-    // Первый символ должен быть цифрой. Это отсекает: -5, +10, 0x10, x5
-    if (!isdigit((unsigned char)arg[0])) {
-        printf("error: usage\r\n");
-        return;
-    }
-
-    uint32_t value = 0;
-    const char *p = arg;
-
-    while (*p != '\0') {
-        // Если встретили не цифру (например, 'x' в "5x") — сразу error: usage
-        if (!isdigit((unsigned char)*p)) {
-            printf("error: usage\r\n");
-            return;
-        }
-
-        // Проверка на переполнение uint32_t (макс 4294967295)
-        if (value > 429496729 || (value == 429496729 && (*p - '0') > 5)) {
-            printf("error: usage\r\n");
-            return;
-        }
-
-        value = value * 10 + (*p - '0');
-        p++;
-    }
-
-    // Отдельная проверка на ноль
-    if (value == 0) {
-        printf("error: period_ms must be greater than 0\r\n");
-        return;
-    }
-
-    // Если дошли сюда — всё ок
-    if (!led_task_set_period_ms(value)) {
-        printf("error: period_ms must be greater than 0\r\n");
+    // годится ли такой период, решает задача светодиода
+    if (!led_task_set_period_ms(period_ms))
+    {
+        printf("error: period_ms must be greater than 0\n");
         return;
     }
 
