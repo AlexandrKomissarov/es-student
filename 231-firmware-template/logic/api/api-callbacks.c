@@ -209,7 +209,7 @@ static void cmd_led_blink(const command_t *command)
 
 static void cmd_led_period(const command_t *command)
 {
-    // 1. Проверка: должен быть ровно один аргумент
+    // Должен быть ровно 1 аргумент
     if (command->argc != 1) {
         printf("error: usage led_period <period_ms>\r\n");
         return;
@@ -217,14 +217,13 @@ static void cmd_led_period(const command_t *command)
 
     const char *arg = command->argv[0];
 
-    // 2. Проверка на пустую строку
+    // Пустая строка — ошибка
     if (!arg || !*arg) {
         printf("error: usage\r\n");
         return;
     }
 
-    // 3. Строгая проверка формата: только цифры 0-9
-    // Если первый символ не цифра — сразу ошибка (это покроет "-5", "0x10", "+10" и т.д.)
+    // Первый символ должен быть цифрой. Это сразу отсекает "-5", "+10", "0x10"
     if (!isdigit((unsigned char)arg[0])) {
         printf("error: usage\r\n");
         return;
@@ -232,7 +231,6 @@ static void cmd_led_period(const command_t *command)
 
     uint32_t value = 0;
     const char *p = arg;
-    bool overflow = false;
 
     while (*p != '\0') {
         // Если встретили не цифру (например, 'x' в "5x") — ошибка
@@ -241,37 +239,34 @@ static void cmd_led_period(const command_t *command)
             return;
         }
 
-        // Проверка на переполнение uint32_t (макс 4294967295)
-        // value * 10 + digit > 4294967295
+        // Проверка на переполнение ПЕРЕД умножением
+        // Максимальное значение uint32_t = 4294967295
+        // Если value > 429496729, то value*10 точно переполнится
+        // Если value == 429496729 и следующая цифра > 5, то тоже переполнится
         if (value > 429496729 || (value == 429496729 && (*p - '0') > 5)) {
-            overflow = true;
-            break;
+            printf("error: usage\r\n");
+            return;
         }
 
         value = value * 10 + (*p - '0');
         p++;
     }
 
-    if (overflow) {
-        printf("error: usage\r\n");
-        return;
-    }
-
-    // 4. Проверка на ноль: период должен быть больше 0
+    // Период должен быть больше 0
     if (value == 0) {
         printf("error: period_ms must be greater than 0\r\n");
         return;
     }
 
-    // Всё ок: применяем период
+    // Если дошли сюда — всё ок
     if (!led_task_set_period_ms(value)) {
-        // На случай, если внутри есть ещё какая-то защита
         printf("error: period_ms must be greater than 0\r\n");
         return;
     }
 
     print_led_state();
 }
+
 
 
 static void cmd_button(const command_t *command)
