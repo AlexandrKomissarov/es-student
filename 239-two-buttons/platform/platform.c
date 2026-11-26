@@ -26,11 +26,13 @@ void platform_init(void)
     gpio_set_dir(BUTTON_PIN_2, GPIO_IN);
     gpio_pull_up(BUTTON_PIN_2);
 }
-
+ 
 void platform_led_set(bool on)
 {
-    gpio_put(LED_PIN, on);
+     // ты будеш работать?
+    gpio_put(LED_PIN, on ? 1 : 0);
 }
+
 
 bool platform_button_read(platform_button_t button)
 {
