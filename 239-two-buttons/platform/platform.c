@@ -4,9 +4,8 @@
 #include <hardware/gpio.h>
 
 #define LED_PIN 25        // встроенный светодиод
-#define BUTTON_1_PIN 15   // кнопка 1 на GP15 (вывод 20)
-#define BUTTON_2_PIN 14   // кнопка 2 на GP14 (вывод 19)
-
+#define BUTTON_1_PIN 15   // кнопка 1 — GP15 (физический вывод 20),
+#define BUTTON_2_PIN 14   // кнопка 2 — GP14 (физический вывод 19, соседний с GP15)
 // физические выводы платы: GP15 — кнопка 1, GP14 — кнопка 2 (вывод 19, соседний с GP15)
 static const uint8_t button_pins[PLATFORM_BUTTON_COUNT] = {BUTTON_1_PIN, BUTTON_2_PIN};
 
