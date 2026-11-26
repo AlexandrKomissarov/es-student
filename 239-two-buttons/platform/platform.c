@@ -4,8 +4,9 @@
 #include <hardware/gpio.h>
 
 #define LED_PIN 25        // встроенный светодиод
-#define BUTTON_1_PIN 15   // кнопка 1 — GP15 (физический вывод 20),
-#define BUTTON_2_PIN 14   // кнопка 2 — GP14 (физический вывод 19, соседний с GP15)
+#define BUTTON_1_PIN 15   // кнопка 1 на GP15 (вывод 20)
+#define BUTTON_2_PIN 14   // кнопка 2 на GP14 (вывод 19)
+
 // физические выводы платы: GP15 — кнопка 1, GP14 — кнопка 2 (вывод 19, соседний с GP15)
 static const uint8_t button_pins[PLATFORM_BUTTON_COUNT] = {BUTTON_1_PIN, BUTTON_2_PIN};
 
@@ -16,14 +17,17 @@ void platform_init(void)
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, false);
 
-    // обе кнопки: вход с подтяжкой к питанию, замыкаются на землю при нажатии
-    for (platform_button_t button = 0; button < PLATFORM_BUTTON_COUNT; button++)
-    {
-        gpio_init(button_pins[button]);
-        gpio_set_dir(button_pins[button], GPIO_IN);
-        gpio_pull_up(button_pins[button]);
-    }
+    // кнопка 1: вход с подтяжкой к питанию, к земле при нажатии
+    gpio_init(BUTTON_PIN);
+    gpio_set_dir(BUTTON_PIN, GPIO_IN);
+    gpio_pull_up(BUTTON_PIN);
+
+    // кнопка 2: вход с подтяжкой к питанию, к земле при нажатии
+    gpio_init(BUTTON_PIN_2);
+    gpio_set_dir(BUTTON_PIN_2, GPIO_IN);
+    gpio_pull_up(BUTTON_PIN_2);
 }
+
 
 void platform_led_set(bool on)
 {
