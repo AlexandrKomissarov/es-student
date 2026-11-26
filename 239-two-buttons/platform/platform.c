@@ -8,8 +8,7 @@
 #define BUTTON_2_PIN 14   // кнопка 2 на GP14 (вывод 19)
 
 // физические выводы платы: GP15 — кнопка 1, GP14 — кнопка 2 (вывод 19, соседний с GP15)
-static const uint8_t button_pins[PLATFORM_BUTTON_COUNT] = {BUTTON_1_PIN, BUTTON_2_PIN};
-
+static const uint8_t button_pins[PLATFORM_BUTTON_COUNT] = {15, 14}; // GP15 и GP14
 void platform_init(void)
 {
     // светодиод
