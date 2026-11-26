@@ -4,6 +4,8 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <ctype.h>
+
 
 #include "api.h"
 
@@ -207,16 +209,17 @@ static void cmd_led_blink(const command_t *command)
 
 static void cmd_led_period(const command_t *command)
 {
-    if (command->argc != 1)
+    uint32_t period_ms;
+
+    // неверно задан аргумент (нет, лишние, не цифры, переполнение) — отказ с подсказкой
+    if (command->argc != 1 || !parse_u32(command->argv[0], &period_ms))
     {
         printf("error: usage led_period <period_ms>\n");
         return;
     }
 
-    uint32_t period_ms;
-
-    if (!parse_u32(command->argv[0], &period_ms) ||
-        !led_task_set_period_ms(period_ms))
+    // годится ли такой период, решает задача светодиода
+    if (!led_task_set_period_ms(period_ms))
     {
         printf("error: period_ms must be greater than 0\n");
         return;
@@ -224,6 +227,8 @@ static void cmd_led_period(const command_t *command)
 
     print_led_state();
 }
+
+
 
 static void cmd_button(const command_t *command)
 {

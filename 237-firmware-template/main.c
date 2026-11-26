@@ -24,12 +24,6 @@ int main(void)
     // Сначала платформа (GPIO, таймеры, иногда и stdio)
     platform_init();
 
-    // Теперь можно безопасно использовать printf / stdio
-#ifdef PROFILING_ENABLED
-    printf("profiling is enabled\r\n");
-#else
-    printf("profiling is disabled in this build\r\n");
-#endif
 
     LOG_INF("%s %s\r\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 

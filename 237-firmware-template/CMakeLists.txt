@@ -15,9 +15,10 @@ pico_sdk_init()
 # Общие библиотеки курса
 add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
 
-# Включаем профилирование
-target_compile_definitions(profiling PUBLIC PROFILING_ENABLED=1)
-
+# выключатель профилирования: 0 — вызовов секундомеров в образе нет
+target_compile_definitions(profiling PUBLIC
+    PROFILING_ENABLED=1
+)
 # 1. Библиотека platform (отдельная!)
 add_library(platform STATIC
     platform/platform.c
