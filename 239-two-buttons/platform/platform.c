@@ -8,7 +8,7 @@
 #define BUTTON_PIN_2 14   // кнопка 2 — вывод GP14, физический вывод 19
 
 static const uint8_t button_pins[PLATFORM_BUTTON_COUNT] = {15, 14};
-
+// заебало блять
 void platform_init(void)
 {
     // светодиод
