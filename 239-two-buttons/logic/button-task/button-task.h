@@ -6,11 +6,13 @@
 
 #include "platform/platform.h"
 
-// задача кнопки без ожидания: машина состояний подавляет дребезг.
-// кнопки адресуются номером: сколько их на плате, знает платформа.
+// функция-колбэк: вызывается без параметров
+typedef void (*button_task_callback_t)(void);
+
 // короткое нажатие у кнопки с долгим действием сообщается при отпускании,
-// у кнопки без долгого действия — сразу, как подтверждён дребезг
-void button_task_init(platform_button_t button, void (*on_press)(void), void (*on_hold)(void));
+// у кнопки без долгого действия — сразу, как подтверждён дребезг.
+// долгое нажатие сообщается один раз за удержание дольше секунды
+void button_task_init(platform_button_t button, button_task_callback_t on_press, button_task_callback_t on_hold);
 void button_task_handle(void);
 
 // кнопку считают нажатой и в «нажата», и в «отпускание»:

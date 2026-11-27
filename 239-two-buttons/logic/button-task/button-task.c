@@ -21,10 +21,11 @@ static uint64_t button_edge_us[PLATFORM_BUTTON_COUNT];
 static uint64_t button_hold_start_us[PLATFORM_BUTTON_COUNT];
 static bool button_hold_reported[PLATFORM_BUTTON_COUNT];
 static uint32_t button_presses[PLATFORM_BUTTON_COUNT];
-static void (*on_press_callbacks[PLATFORM_BUTTON_COUNT])(void) = {NULL};
-static void (*on_hold_callbacks[PLATFORM_BUTTON_COUNT])(void) = {NULL};
 
-void button_task_init(platform_button_t button, void (*on_press)(void), void (*on_hold)(void))
+static button_task_callback_t on_press_callbacks[PLATFORM_BUTTON_COUNT] = {NULL};
+static button_task_callback_t on_hold_callbacks[PLATFORM_BUTTON_COUNT] = {NULL};
+
+void button_task_init(platform_button_t button, button_task_callback_t on_press, button_task_callback_t on_hold)
 {
     on_press_callbacks[button] = on_press;
     on_hold_callbacks[button] = on_hold;
