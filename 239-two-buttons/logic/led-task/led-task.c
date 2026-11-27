@@ -124,3 +124,8 @@ void led_task_next_state(void)
         break;
     }
 }
+
+void led_task_blink(void)
+{
+    led_task_set_state(LED_STATE_BLINK);
+}

@@ -34,8 +34,8 @@ int main(void)
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
 
     led_task_init();
-    button_task_init(PLATFORM_BUTTON_1, led_task_next_state);
-    button_task_init(PLATFORM_BUTTON_2, led_task_next_period);
+    button_task_init(PLATFORM_BUTTON_1, led_task_next_state, led_task_blink);
+    button_task_init(PLATFORM_BUTTON_2, led_task_next_period, NULL);
     stdio_text_protocol_init();
 
     while (1)

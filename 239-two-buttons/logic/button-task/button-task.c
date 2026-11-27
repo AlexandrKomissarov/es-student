@@ -5,6 +5,7 @@
 #include <stddef.h>
 
 #define BUTTON_DEBOUNCE_US (20 * 1000)
+#define BUTTON_HOLD_US 1000000
 
 typedef enum
 {
@@ -14,17 +15,23 @@ typedef enum
     BUTTON_STATE_RELEASING,
 } button_state_t;
 
-// У каждой кнопки своё состояние, дребезг и счёт нажатий
+// у каждой кнопки своё состояние, дребезг и счёт нажатий
 static button_state_t button_state[PLATFORM_BUTTON_COUNT];
 static uint64_t button_edge_us[PLATFORM_BUTTON_COUNT];
+static uint64_t button_hold_start_us[PLATFORM_BUTTON_COUNT];
+static bool button_hold_reported[PLATFORM_BUTTON_COUNT];
 static uint32_t button_presses[PLATFORM_BUTTON_COUNT];
 static void (*on_press_callbacks[PLATFORM_BUTTON_COUNT])(void) = {NULL};
+static void (*on_hold_callbacks[PLATFORM_BUTTON_COUNT])(void) = {NULL};
 
-void button_task_init(platform_button_t button, void (*on_press)(void))
+void button_task_init(platform_button_t button, void (*on_press)(void), void (*on_hold)(void))
 {
     on_press_callbacks[button] = on_press;
+    on_hold_callbacks[button] = on_hold;
     button_state[button] = BUTTON_STATE_RELEASED;
     button_edge_us[button] = 0;
+    button_hold_start_us[button] = 0;
+    button_hold_reported[button] = false;
     button_presses[button] = 0;
 }
 
@@ -53,10 +60,12 @@ void button_task_handle(void)
             else if (now_us - button_edge_us[button] >= BUTTON_DEBOUNCE_US)
             {
                 button_presses[button]++;
+                button_hold_start_us[button] = now_us;
+                button_hold_reported[button] = false;
                 button_state[button] = BUTTON_STATE_PRESSED;
 
-                // действие нажатия задаёт тот, кто вызвал init
-                if (on_press_callbacks[button] != NULL)
+                // у кнопки без долгого действия нажатие — сразу, как раньше
+                if (on_hold_callbacks[button] == NULL && on_press_callbacks[button] != NULL)
                 {
                     on_press_callbacks[button]();
                 }
@@ -69,6 +78,16 @@ void button_task_handle(void)
                 button_edge_us[button] = now_us;
                 button_state[button] = BUTTON_STATE_RELEASING;
             }
+            else if (!button_hold_reported[button] &&
+                     now_us - button_hold_start_us[button] >= BUTTON_HOLD_US)
+            {
+                // долгое нажатие сообщается один раз за нажатие
+                button_hold_reported[button] = true;
+                if (on_hold_callbacks[button] != NULL)
+                {
+                    on_hold_callbacks[button]();
+                }
+            }
             break;
 
         case BUTTON_STATE_RELEASING:
@@ -79,6 +98,14 @@ void button_task_handle(void)
             else if (now_us - button_edge_us[button] >= BUTTON_DEBOUNCE_US)
             {
                 button_state[button] = BUTTON_STATE_RELEASED;
+
+                // у кнопки с долгим действием короткое сообщаем при отпускании,
+                // но только если это нажатие не стало долгим
+                if (on_hold_callbacks[button] != NULL && !button_hold_reported[button] &&
+                    on_press_callbacks[button] != NULL)
+                {
+                    on_press_callbacks[button]();
+                }
             }
             break;
         }

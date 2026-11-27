@@ -1,4 +1,4 @@
-// // logic/led-task/led-task.h
+// logic/led-task/led-task.h
 #pragma once
 
 #include <stdbool.h>
@@ -20,3 +20,5 @@ led_state_t led_task_get_state(void);
 void led_task_next_state(void);
 // переводит период мигания на следующий из круга 250 → 500 → 1000 мс
 void led_task_next_period(void);
+// переводит светодиод в мигание; действие долгого нажатия первой кнопки
+void led_task_blink(void);
